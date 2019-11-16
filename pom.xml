@@ -6,28 +6,15 @@
 
     <groupId>com.loliktest</groupId>
     <artifactId>ufit</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <distributionManagement>
         <repository>
-            <id>artifactory</id>
-            <name>artifactory-releases</name>
-            <url>https://pdffiller.jfrog.io/pdffiller/qa</url>
+            <id>github</id>
+            <name>GitHub AlexLAA Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/AlexLAA/com.loliktest.ufit</url>
         </repository>
-        <snapshotRepository>
-            <id>artifactory</id>
-            <name>artifactory-snapshots</name>
-            <url>https://pdffiller.jfrog.io/pdffiller/qa</url>
-        </snapshotRepository>
     </distributionManagement>
-
-
-    <repositories>
-        <repository>
-            <id>artifactory</id>
-            <url>https://pdffiller.jfrog.io/pdffiller/qa</url>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
@@ -39,6 +26,23 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
             </plugin>
         </plugins>
     </build>

@@ -35,7 +35,6 @@ public class Browser {
     public void quit() {
         listeners.forEach(l -> l.quite(this));
         driver().quit();
-        System.out.println("QUITE");
     }
 
     public String getCurrentUrl() {

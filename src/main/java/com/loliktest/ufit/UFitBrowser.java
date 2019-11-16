@@ -11,7 +11,7 @@ public class UFitBrowser {
 
     private static ThreadLocal<List<Browser>> BROWSERS = ThreadLocal.withInitial(ArrayList::new);
     private static ThreadLocal<Browser> CURRENT_BROWSER = new ThreadLocal<>();
-    private static List<Browser> runtimeBrowsersList = new ArrayList<>();
+    static List<Browser> runtimeBrowsersList = new ArrayList<>();
 
     private UFitBrowser() {
     }
