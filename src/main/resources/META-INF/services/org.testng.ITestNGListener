@@ -1,0 +1,2 @@
+com.loliktest.ufit.listeners.testng.BrowserQuiteListener
+com.loliktest.ufit.listeners.testng.AllureAttachmentsListener
