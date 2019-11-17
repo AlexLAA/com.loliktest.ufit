@@ -1,11 +1,12 @@
 package com.loliktest.ufit;
 
-import com.loliktest.ufit.browser.BrowserFactory;
 import com.loliktest.ufit.browsers.DefaultLocalBrowser;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
+import java.util.stream.StreamSupport;
 
 public class UFitBrowser {
 
@@ -29,6 +30,9 @@ public class UFitBrowser {
         int size = BROWSERS.get().size();
         if (size <= instance) {
             for (int i = size; i <= instance; i++) {
+                IBrowserConfig browserConfig = StreamSupport.stream(ServiceLoader.load(IBrowserConfig.class).spliterator(), false)
+                        .filter(b -> b.name().equals("mobile")).findFirst()
+                        .orElseThrow(() -> new NullPointerException("Browser with name: mobile NOT FOUND"));
                 registerNewBrowser(browserConfig.setupDriver());
             }
         }

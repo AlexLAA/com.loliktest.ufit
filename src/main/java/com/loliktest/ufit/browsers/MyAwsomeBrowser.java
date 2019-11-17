@@ -12,10 +12,11 @@ import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.util.logging.Level;
 
-public class DefaultLocalBrowser implements IBrowserConfig {
+public class MyAwsomeBrowser implements IBrowserConfig {
 
     @Override
     public WebDriver setupDriver() {
+        System.out.println("MY AWSOME BROWSER");
         Browser.setBrowserListener(new BrowserListener());
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--no-sandbox");
@@ -31,7 +32,7 @@ public class DefaultLocalBrowser implements IBrowserConfig {
 
     @Override
     public String name() {
-        return "default";
+        return "mobile";
     }
 
 }

@@ -1,9 +1,19 @@
 # UFit
 Created By LolikTest
 
-With love for team!
+With love for Automation team!
 
+## Download
 
+Maven Dependency
+
+```
+<dependency>
+  <groupId>com.loliktest</groupId>
+  <artifactId>ufit</artifactId>
+  <version>0.0.3</version>
+</dependency>
+```
 
 ## General Info
 

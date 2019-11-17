@@ -5,5 +5,6 @@ import org.openqa.selenium.WebDriver;
 public interface IBrowserConfig {
 
     WebDriver setupDriver();
+    String name();
 
 }
