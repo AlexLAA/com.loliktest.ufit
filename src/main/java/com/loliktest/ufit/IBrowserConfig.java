@@ -6,6 +6,4 @@ public interface IBrowserConfig {
 
     WebDriver setupDriver();
 
-    String name();
-
 }

@@ -1,5 +1,6 @@
 package com.loliktest.ufit;
 
+import com.loliktest.ufit.browsers.DefaultLocalBrowser;
 import com.loliktest.ufit.exceptions.UFitException;
 
 import java.util.Optional;
@@ -10,14 +11,13 @@ class BrowserLoader {
 
 
     public static IBrowserConfig loadBrowserConfig() {
-        IBrowserConfig browserConfig = StreamSupport.stream(ServiceLoader.load(IBrowserConfig.class).spliterator(), false)
-                .filter(b -> b.name().equals(getParameterBrowser())).findFirst()
-                .orElseThrow(() -> new UFitException("Browser with name: '" + getParameterBrowser() + "' NOT FOUND"));
-        return browserConfig;
+        return StreamSupport.stream(ServiceLoader.load(IBrowserConfig.class).spliterator(), false)
+                .filter(b -> b.getClass().getSimpleName().equals(getParameterBrowser())).findFirst()
+                .orElse(new DefaultLocalBrowser());
     }
 
     private static String getParameterBrowser() {
-        return Optional.ofNullable(UFitListener.getParameter("browser")).orElse("default");
+        return Optional.ofNullable(UFitListener.getParameter("browser")).orElse("DefaultBrowserConfig");
     }
 
 }
