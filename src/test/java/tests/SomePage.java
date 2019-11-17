@@ -10,9 +10,7 @@ public class SomePage {
     public Elem elem;
 
 
-
-
-    public SomePage(){
+    public SomePage() {
         UFit.initPage(this);
     }
 

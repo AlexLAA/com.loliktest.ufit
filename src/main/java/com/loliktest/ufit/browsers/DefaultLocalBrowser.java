@@ -1,8 +1,6 @@
 package com.loliktest.ufit.browsers;
 
-import com.loliktest.ufit.Browser;
 import com.loliktest.ufit.IBrowserConfig;
-import com.loliktest.ufit.listeners.BrowserListener;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -16,7 +14,6 @@ public class DefaultLocalBrowser implements IBrowserConfig {
 
     @Override
     public WebDriver setupDriver() {
-        Browser.setBrowserListener(new BrowserListener());
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");

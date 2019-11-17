@@ -50,7 +50,7 @@ public class Browser {
         }
     }
 
-    public static void setBrowserListener(IBrowserListener browserListener){
+    public static void setBrowserListener(IBrowserListener browserListener) {
         listeners.add(browserListener);
     }
 

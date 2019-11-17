@@ -11,7 +11,7 @@ public class BrowserListener implements IBrowserListener {
 
     @Override
     public void get(String url, Browser browser) {
-        logger.info("Navigate: "+url);
+        logger.info("Navigate: " + url);
     }
 
     @Override

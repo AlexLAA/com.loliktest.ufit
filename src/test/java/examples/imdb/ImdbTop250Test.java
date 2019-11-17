@@ -3,7 +3,6 @@ package examples.imdb;
 import examples.imdb.ufit.items.MovieItem;
 import examples.imdb.ufit.pages.SearchPage;
 import examples.imdb.ufit.pages.Top250Page;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -16,7 +15,7 @@ public class ImdbTop250Test {
     Top250Page page = new Top250Page();
 
     @Test
-    public void getAll(){
+    public void getAll() {
         browser().get("https://www.imdb.com/chart/top");
         Top250Page page = new Top250Page();
         double rating = page.getMovieRatingByTitle("The Godfather");

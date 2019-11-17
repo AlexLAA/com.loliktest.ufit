@@ -1,19 +1,16 @@
 package com.loliktest.ufit;
 
-import com.loliktest.ufit.browsers.DefaultLocalBrowser;
+import com.loliktest.ufit.listeners.BrowserListener;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ServiceLoader;
-import java.util.stream.StreamSupport;
 
 public class UFitBrowser {
 
     private static ThreadLocal<List<Browser>> BROWSERS = ThreadLocal.withInitial(ArrayList::new);
     private static ThreadLocal<Browser> CURRENT_BROWSER = new ThreadLocal<>();
     static List<Browser> runtimeBrowsersList = new ArrayList<>();
-    private static IBrowserConfig browserConfig = new DefaultLocalBrowser();
 
     private UFitBrowser() {
     }
@@ -30,10 +27,7 @@ public class UFitBrowser {
         int size = BROWSERS.get().size();
         if (size <= instance) {
             for (int i = size; i <= instance; i++) {
-                IBrowserConfig browserConfig = StreamSupport.stream(ServiceLoader.load(IBrowserConfig.class).spliterator(), false)
-                        .filter(b -> b.name().equals("mobile")).findFirst()
-                        .orElseThrow(() -> new NullPointerException("Browser with name: mobile NOT FOUND"));
-                registerNewBrowser(browserConfig.setupDriver());
+                registerNewBrowser(BrowserLoader.loadBrowserConfig().setupDriver());
             }
         }
         CURRENT_BROWSER.set(BROWSERS.get().get(instance));
@@ -42,6 +36,7 @@ public class UFitBrowser {
 
 
     private static Browser registerNewBrowser(WebDriver driver) {
+        Browser.setBrowserListener(new BrowserListener());
         Browser browser = new Browser(driver);
         BROWSERS.get().add(browser);
         CURRENT_BROWSER.set(browser);

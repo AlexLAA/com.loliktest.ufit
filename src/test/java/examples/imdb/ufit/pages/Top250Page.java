@@ -24,7 +24,7 @@ public class Top250Page {
     }
 
     @Step
-    public double getMovieRatingByTitle(String movieTitle){
+    public double getMovieRatingByTitle(String movieTitle) {
         return Double.parseDouble(movieItems.get(movie -> movie.title.getText().equals(movieTitle)).rating.getText());
     }
 

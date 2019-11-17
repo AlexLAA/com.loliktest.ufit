@@ -1,7 +1,6 @@
 package examples.imdb.ufit.items;
 
 import com.loliktest.ufit.Elem;
-import com.loliktest.ufit.Elems;
 import com.loliktest.ufit.Selector;
 
 public class MovieItem {
