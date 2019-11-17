@@ -11,13 +11,14 @@ import java.util.List;
 
 public class Browser {
 
-    private List<IBrowserListener> listeners = new ArrayList<>();
+    private static List<IBrowserListener> listeners = new ArrayList<>();
 
     public DevTools devTools = new DevTools();
     public BrowserWait wait = new BrowserWait();
     private BrowserSession session = new BrowserSession();
 
     Browser(WebDriver driver) {
+        listeners.forEach(l -> l.open(this));
         session.driver = driver;
     }
 
@@ -47,6 +48,10 @@ public class Browser {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void setBrowserListener(IBrowserListener browserListener){
+        listeners.add(browserListener);
     }
 
 

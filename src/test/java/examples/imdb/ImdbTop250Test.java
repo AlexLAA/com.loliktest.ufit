@@ -16,7 +16,13 @@ public class ImdbTop250Test {
     @Test
     public void getAll(){
         browser().get("https://www.imdb.com/chart/top");
+        System.out.println(page.title.getBy());
+        System.out.println(page.title.getName());
         List<MovieItem> movieItems = page.movieItems.get();
+       // movieItems.forEach(i -> System.out.println(i.title.getText()));
+        page.navigationBar.search("Star Wars");
+
+
 
     }
 

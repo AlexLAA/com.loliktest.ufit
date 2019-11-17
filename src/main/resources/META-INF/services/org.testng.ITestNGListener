@@ -1,2 +1,2 @@
-com.loliktest.ufit.BrowserQuiteListener
+com.loliktest.ufit.BrowserQuitListener
 com.loliktest.ufit.listeners.testng.AllureAttachmentsListener

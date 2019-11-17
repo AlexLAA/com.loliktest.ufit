@@ -1,7 +1,7 @@
 package com.loliktest.ufit;
 
-import com.loliktest.ufit.Browser;
 import com.loliktest.ufit.browser.BrowserFactory;
+import com.loliktest.ufit.browsers.DefaultLocalBrowser;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ public class UFitBrowser {
     private static ThreadLocal<List<Browser>> BROWSERS = ThreadLocal.withInitial(ArrayList::new);
     private static ThreadLocal<Browser> CURRENT_BROWSER = new ThreadLocal<>();
     static List<Browser> runtimeBrowsersList = new ArrayList<>();
+    private static IBrowserConfig browserConfig = new DefaultLocalBrowser();
 
     private UFitBrowser() {
     }
@@ -28,7 +29,7 @@ public class UFitBrowser {
         int size = BROWSERS.get().size();
         if (size <= instance) {
             for (int i = size; i <= instance; i++) {
-                registerNewBrowser(BrowserFactory.getLocalDriver());
+                registerNewBrowser(browserConfig.setupDriver());
             }
         }
         CURRENT_BROWSER.set(BROWSERS.get().get(instance));

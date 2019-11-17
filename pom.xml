@@ -6,15 +6,19 @@
 
     <groupId>com.loliktest</groupId>
     <artifactId>ufit</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.3</version>
 
     <distributionManagement>
         <repository>
             <id>github</id>
-            <name>GitHub AlexLAA Apache Maven Packages</name>
+            <name>GitHub LolikTest Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/AlexLAA/com.loliktest.ufit</url>
         </repository>
     </distributionManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <build>
         <plugins>
@@ -30,14 +34,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <version>3.1.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -87,6 +84,12 @@
             <version>6.14.3</version>
         </dependency>
 
+        <!-- Logger slf4j-log4j12-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.25</version>
+        </dependency>
 
     </dependencies>
 

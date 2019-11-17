@@ -2,7 +2,7 @@ package com.loliktest.ufit;
 
 import org.testng.*;
 
-public class BrowserQuiteListener implements ISuiteListener {
+public class BrowserQuitListener implements ISuiteListener {
 
 
     @Override
