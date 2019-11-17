@@ -11,7 +11,7 @@ Maven Dependency
 <dependency>
   <groupId>com.loliktest</groupId>
   <artifactId>ufit</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.6</version>
 </dependency>
 ```
 
