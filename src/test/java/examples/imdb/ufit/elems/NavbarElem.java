@@ -16,6 +16,9 @@ public class NavbarElem {
     @Step
     public SearchPage search(String text) {
         searchField.sendKeys(text);
+        searchField.isPresent(10);
+        searchField.assertion().isPresent(5);
+        searchField.isContainsText("Jack Sparrow", 0);
         searchButton.click();
         return new SearchPage();
     }

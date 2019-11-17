@@ -6,6 +6,7 @@ import com.loliktest.ufit.Selector;
 import com.loliktest.ufit.UFit;
 import examples.imdb.ufit.elems.NavbarElem;
 import examples.imdb.ufit.items.MovieItem;
+import io.qameta.allure.Step;
 
 public class Top250Page {
 
@@ -20,6 +21,11 @@ public class Top250Page {
 
     public Top250Page() {
         UFit.initPage(this);
+    }
+
+    @Step
+    public double getMovieRatingByTitle(String movieTitle){
+        return Double.parseDouble(movieItems.get(movie -> movie.title.getText().equals(movieTitle)).rating.getText());
     }
 
 }
