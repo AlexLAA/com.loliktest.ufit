@@ -14,11 +14,9 @@ public class NavbarElem {
     public Elem searchButton;
 
     @Step
-    public SearchPage search(String text){
+    public SearchPage search(String text) {
         searchField.sendKeys(text);
         searchButton.click();
         return new SearchPage();
     }
-
-
 }
