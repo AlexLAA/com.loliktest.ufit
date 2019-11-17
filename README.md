@@ -135,3 +135,59 @@ public class Top250Page {
     Assert.assertEquals(rating, 9.1, "Movie Rating Not as Expected");
  ```
 
+## Browser Usage
+
+UFit makes work with browser as simple as possible.
+
+1. Browser Opens on executing `browser()` method
+2. All your browsers will be closed on Test Suite finish event
+
+By Default UFit uses Google Chrome Browser
+
+You Can run your tests in parallel with TestNG and don't think about browser instances.
+
+Each Thread will have it own browser.
+
+## Browser Configuration
+
+If you want to customize Browser you can use simple way to store and use different configurations.
+
+1. Create class MyCustomBrowser that implements IBrowserConfig interface
+2. Add path to MyCustomBrowser in META-INF/services/com.loliktest.ufit.IBrowserConfig file in main/resources folder
+3. Set `<parameter name="browser" value="MyCustomBrowser"></parameter>` parameter at Suite Level in TestNG.xml file
+
+### Example
+#### Create class MyCustomBrowser that implements IBrowserConfig interface
+```
+public class MyCustomBrowser implements IBrowserConfig {
+
+    @Override
+    public WebDriver setupDriver() {
+        ChromeOptions options = new ChromeOptions();
+        Map<String, String> mobileEmulation = new HashMap<>();
+        mobileEmulation.put("deviceName", "iPhone 8");
+        options.setExperimentalOption("mobileEmulation", mobileEmulation);
+        return new ChromeDriver(options);
+    }
+
+}
+```
+---
+#### Add path to MyCustomBrowser in META-INF/services/com.loliktest.ufit.IBrowserConfig file in main/resources folder 
+`com.loliktest.ufit.browsers.MyCustomBrowser`
+
+---
+#### Set parameter browser at Suite Level in TestNG.xml file
+
+```
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="MySuite" parallel="tests" thread-count="5">
+    <parameter name="browser" value="MyCustomBrowser"></parameter>
+    <test name="Login">
+        <classes>
+            <class name="com.project.tests.LoginTest"></class>
+        </classes>
+    </test>
+</suite>
+```
+
