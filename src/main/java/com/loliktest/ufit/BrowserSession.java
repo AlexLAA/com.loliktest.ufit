@@ -1,4 +1,4 @@
-package com.loliktest.ufit.browser;
+package com.loliktest.ufit;
 
 import org.openqa.selenium.WebDriver;
 

@@ -18,6 +18,7 @@ public class ImdbTop250Test {
     public void getAll() {
         browser().get("https://www.imdb.com/chart/top");
         Top250Page page = new Top250Page();
+        page.assertIsOpened();
         double rating = page.getMovieRatingByTitle("The Godfather");
         Assert.assertEquals(rating, 9.1, "Movie Rating Not as Expected");
         System.out.println(page.title.getBy());

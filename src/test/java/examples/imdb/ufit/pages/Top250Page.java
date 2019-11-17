@@ -7,6 +7,9 @@ import com.loliktest.ufit.UFit;
 import examples.imdb.ufit.elems.NavbarElem;
 import examples.imdb.ufit.items.MovieItem;
 import io.qameta.allure.Step;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import static com.loliktest.ufit.UFitBrowser.browser;
 
 public class Top250Page {
 
@@ -21,6 +24,10 @@ public class Top250Page {
 
     public Top250Page() {
         UFit.initPage(this);
+    }
+
+    public void assertIsOpened(){
+        browser().wait.assertion("PAGE NOT OPENED").isUrlContains("/top22", 5);
     }
 
     @Step

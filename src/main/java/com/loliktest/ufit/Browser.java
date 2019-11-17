@@ -1,9 +1,7 @@
 package com.loliktest.ufit;
 
-import com.loliktest.ufit.browser.BrowserSession;
-import com.loliktest.ufit.browser.BrowserWait;
-import com.loliktest.ufit.browser.DevTools;
 import com.loliktest.ufit.listeners.IBrowserListener;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
@@ -27,6 +25,20 @@ public class Browser {
         return session.driver;
     }
 
+    public void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void setBrowserListener(IBrowserListener browserListener) {
+        listeners.add(browserListener);
+    }
+
+    //BROWSER ACTIONS
+
     public void get(String url) {
         listeners.forEach(l -> l.get(url, this));
         driver().get(url);
@@ -42,16 +54,10 @@ public class Browser {
         return driver().getCurrentUrl();
     }
 
-    public void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void setBrowserListener(IBrowserListener browserListener) {
-        listeners.add(browserListener);
+    @Step
+    public WebDriver switchToWindow(int number) {
+        return driver().switchTo()
+                .window(driver().getWindowHandles().toArray()[number].toString());
     }
 
 
