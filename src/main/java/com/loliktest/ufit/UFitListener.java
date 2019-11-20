@@ -1,5 +1,6 @@
 package com.loliktest.ufit;
 
+import com.loliktest.ufit.listeners.BrowserListener;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 
@@ -16,6 +17,7 @@ public class UFitListener implements ISuiteListener {
 
     @Override
     public void onStart(ISuite suite) {
+        Browser.setBrowserListener(new BrowserListener());
         testNgParameters.put("browser", suite.getParameter("browser"));
     }
 

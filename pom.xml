@@ -6,14 +6,24 @@
 
     <groupId>com.loliktest</groupId>
     <artifactId>ufit</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.21</version>
 
     <distributionManagement>
-        <repository>
+<!--        <repository>
             <id>github</id>
-            <name>GitHub LolikTest Apache Maven Packages</name>
+            <name>GitHub AlexLAA Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/AlexLAA/com.loliktest.ufit</url>
-        </repository>
+        </repository>-->
+            <repository>
+                <id>artifactory</id>
+                <name>artifactory-releases</name>
+                <url>https://pdffiller.jfrog.io/pdffiller/qa</url>
+            </repository>
+            <snapshotRepository>
+                <id>artifactory</id>
+                <name>artifactory-snapshots</name>
+                <url>https://pdffiller.jfrog.io/pdffiller/qa</url>
+            </snapshotRepository>
     </distributionManagement>
 
     <properties>
@@ -35,6 +45,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

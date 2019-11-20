@@ -1,6 +1,7 @@
 package com.loliktest.ufit;
 
 import io.qameta.allure.Step;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -53,6 +54,21 @@ public class BrowserWait {
 
     public boolean isUrlEquals(String url) {
         return isUrlEquals(url, Timeout.getDefault());
+    }
+
+    public boolean isNumberOfWindowsToBe(int count, long timeout) {
+        return until(ExpectedConditions.numberOfWindowsToBe(count), timeout);
+    }
+
+    public boolean isNumberOfWindowsToBe(int count){
+        return isNumberOfWindowsToBe(count, Timeout.getDefault());
+    }
+
+    public void javaScriptReturnStringContains(String script, String expected, int timeout) {
+        driverWait(timeout)
+                .ignoring(JavascriptException.class)
+                .ignoring(NullPointerException.class)
+                .until(d -> ((JavascriptExecutor) d).executeScript(script).toString().contains(expected));
     }
 
     public <V> boolean is(Function<? super WebDriver, V> isTrue, long timeout) {

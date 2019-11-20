@@ -8,6 +8,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class DefaultLocalBrowser implements IBrowserConfig {
@@ -25,6 +27,14 @@ public class DefaultLocalBrowser implements IBrowserConfig {
         options.setCapability("goog:loggingPrefs", logPrefs);
         WebDriver driver = new ChromeDriver(options);
         return driver;
+    }
+
+    @Override
+    public Map<String, Object> parameters() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("isMobile", false);
+        parameters.put("isSelenoid", false);
+        return parameters;
     }
 
 }

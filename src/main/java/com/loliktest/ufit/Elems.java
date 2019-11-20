@@ -48,7 +48,7 @@ public class Elems<T> {
     }
 
     public List<T> get() {
-        return UFit.initCollections(elem, type, initialIndex, delta);
+        return isUFit ? UFit.initCollections(elem, type, initialIndex, delta) : PageElements.initCollection(elem, type, initialIndex, delta);
     }
 
     public T get(Predicate<T> p, String message) {

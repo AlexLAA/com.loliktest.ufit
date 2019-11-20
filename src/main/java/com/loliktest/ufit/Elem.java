@@ -11,7 +11,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.loliktest.ufit.UFitBrowser.browser;
 
@@ -242,6 +244,25 @@ public class Elem {
                 .perform();
     }
 
+    public void hoverOver(){
+        hoverOver(Timeout.getDefaultElem());
+    }
+
+    public void hoverOver(long timeout){
+        actions().moveToElement(find(timeout)).perform();
+    }
+
+    public void hoverAndClick(){
+        actions().moveToElement(find()).click().perform();
+    }
+
+    public void scrollTo(){
+        browser().devTools.executeScript("arguments[0].scrollIntoView(true);", find());
+    }
+
+    public void clickByCoordinates(int x, int y){
+        actions().moveToElement(find(), x, y).click().perform();
+    }
     // WAIT
 
     private void checkAssert(Object detailMessage) {
@@ -358,6 +379,23 @@ public class Elem {
         }
     }
 
+    public boolean isEqualsText(String text) {
+        return isEqualsText(text, Timeout.getDefaultElem());
+    }
+
+
+    public boolean isEqualsText(String text, long timeout) {
+        try {
+            getWebDriverWait(timeout).until(ExpectedConditions.textToBe(by, text));
+            return true;
+        } catch (TimeoutException e) {
+            checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
+            return false;
+        } finally {
+            assertIt = false;
+        }
+    }
+
     public boolean isNotContainsText(String text) {
         return isNotContainsText(text, Timeout.getDefaultElem());
     }
@@ -380,6 +418,15 @@ public class Elem {
 
     public boolean isAttributeNotContainsValue(String attribute, String value, long timeout) {
         return until(ExpectedConditions.not(ExpectedConditions.attributeContains(by, attribute, value)), timeout);
+    }
+
+
+    public boolean isAttributeNotEqualsValue(String attribute, String value) {
+        return isAttributeNotEqualsValue(attribute, value, Timeout.getDefaultElem());
+    }
+
+    public boolean isAttributeNotEqualsValue(String attribute, String value, long timeout) {
+        return until(ExpectedConditions.not(ExpectedConditions.attributeToBe(by, attribute, value)), timeout);
     }
 
     public boolean isAttributeContainsValue(String attribute, String value) {
@@ -490,6 +537,15 @@ public class Elem {
 
     private WebDriverWait getWebDriverWait(long seconds) {
         return browser().wait.driverWait(seconds);
+    }
+
+    public List<Elem> findList() {
+        AtomicInteger integer = new AtomicInteger(1);
+        return this.finds().stream().map(o -> new Elem(this.getBy(), this.getName()).setIndex(integer.getAndIncrement())).collect(Collectors.toList());
+    }
+
+    public Elem findsElemByText(String text) {
+        return findList().stream().filter(o -> o.getText().equals(text)).findFirst().orElseThrow(() -> new AssertionError("Element with text: " + text + " NOT FOUND"));
     }
 
     @Override
