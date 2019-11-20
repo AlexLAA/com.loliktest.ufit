@@ -101,11 +101,11 @@ public class Browser {
 
 
     // DEPRECATED
-
+    @Deprecated
     public String getRemoteSessionId() {
         return ((RemoteWebDriver) ((EventFiringWebDriver) driver()).getWrappedDriver()).getSessionId().toString();
     }
-
+    @Deprecated
     public String getClipboardContent() throws IOException, UnsupportedFlavorException {
         return getSession().isSelenoid()
                 ?
@@ -113,7 +113,7 @@ public class Browser {
                 :
                 Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
     }
-
+    @Deprecated
     public String getSelenoidLink(String fileName) throws IOException {
         String downloadLink = "http://3.230.127.230:4444" + "/download/" + getRemoteSessionId() + "/" + fileName.replace(" ", "%20");
         //logger.info("Selenoid download link: " + downloadLink);
