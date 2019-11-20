@@ -8,7 +8,7 @@ import java.util.Map;
 public class BrowserSession {
 
     public WebDriver driver;
-    public Map<String, Object> parameters = new HashMap<>();
+    Map<String, Object> parameters = new HashMap<>();
 
     void setParameters(Map<String, Object> parameters){
         this.parameters = parameters;

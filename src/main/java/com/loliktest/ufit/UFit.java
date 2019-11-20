@@ -116,17 +116,22 @@ public class UFit {
     static List initCollections(Elem elem, Class cl, int initialIndex, int delta) {
         AtomicInteger count = new AtomicInteger(initialIndex);
         List collection = new ArrayList<>();
-        elem.finds().forEach(e -> {
-            try {
-                Object o = cl.newInstance();
-                initElements(o, elem.setIndex(count.getAndAdd(delta)));
-                collection.add(o);
-            } catch (InstantiationException ex) {
-                ex.printStackTrace();
-            } catch (IllegalAccessException ex) {
-                ex.printStackTrace();
-            }
-        });
+        System.out.println("TYPE: "+cl.getSimpleName());
+        if(cl.getSimpleName().equals("Elem")){
+            elem.finds().forEach(e -> collection.add(elem.setIndex(count.getAndAdd(delta))));
+        } else {
+            elem.finds().forEach(e -> {
+                try {
+                    Object o = cl.newInstance();
+                    initElements(o, elem.setIndex(count.getAndAdd(delta)));
+                    collection.add(o);
+                } catch (InstantiationException ex) {
+                    ex.printStackTrace();
+                } catch (IllegalAccessException ex) {
+                    ex.printStackTrace();
+                }
+            });
+        }
         return collection;
     }
 

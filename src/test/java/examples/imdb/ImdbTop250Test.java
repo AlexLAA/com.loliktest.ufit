@@ -1,5 +1,6 @@
 package examples.imdb;
 
+import com.loliktest.ufit.Elem;
 import examples.imdb.ufit.items.MovieItem;
 import examples.imdb.ufit.pages.SearchPage;
 import examples.imdb.ufit.pages.Top250Page;
@@ -13,6 +14,14 @@ import static com.loliktest.ufit.UFitBrowser.browser;
 public class ImdbTop250Test {
 
     Top250Page page = new Top250Page();
+
+    @Test
+    public void asda(){
+        browser().get("https://www.imdb.com/chart/top");
+        List<Elem> elems = page.elemItems.get();
+        elems.forEach(elem -> System.out.println(elem.getBy()));
+        System.out.println("");
+    }
 
     @Test
     public void getAll() {

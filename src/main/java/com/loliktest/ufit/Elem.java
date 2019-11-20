@@ -539,15 +539,6 @@ public class Elem {
         return browser().wait.driverWait(seconds);
     }
 
-    public List<Elem> findList() {
-        AtomicInteger integer = new AtomicInteger(1);
-        return this.finds().stream().map(o -> new Elem(this.getBy(), this.getName()).setIndex(integer.getAndIncrement())).collect(Collectors.toList());
-    }
-
-    public Elem findsElemByText(String text) {
-        return findList().stream().filter(o -> o.getText().equals(text)).findFirst().orElseThrow(() -> new AssertionError("Element with text: " + text + " NOT FOUND"));
-    }
-
     @Override
     public String toString() {
         return "'" + name + "'" + " (" + by + ")";

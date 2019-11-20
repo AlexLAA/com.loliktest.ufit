@@ -22,6 +22,9 @@ public class Top250Page {
     @Selector(".lister-list > tr")
     public Elems<MovieItem> movieItems;
 
+    @Selector(".lister-list > tr")
+    public Elems<Elem> elemItems;
+
     public Top250Page() {
         UFit.initPage(this);
     }
