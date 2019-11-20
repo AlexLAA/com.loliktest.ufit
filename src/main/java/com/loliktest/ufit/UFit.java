@@ -116,7 +116,6 @@ public class UFit {
     static List initCollections(Elem elem, Class cl, int initialIndex, int delta) {
         AtomicInteger count = new AtomicInteger(initialIndex);
         List collection = new ArrayList<>();
-        System.out.println("TYPE: "+cl.getSimpleName());
         if(cl.getSimpleName().equals("Elem")){
             elem.finds().forEach(e -> collection.add(elem.setIndex(count.getAndAdd(delta))));
         } else {
