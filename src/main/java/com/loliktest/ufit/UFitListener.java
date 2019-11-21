@@ -1,6 +1,7 @@
 package com.loliktest.ufit;
 
 import com.loliktest.ufit.listeners.BrowserListener;
+import io.qameta.allure.Allure;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 
