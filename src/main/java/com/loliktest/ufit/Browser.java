@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.loliktest.ufit.UFitBrowser.browser;
 import static com.loliktest.ufit.UFitBrowser.getBrowsersList;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -98,25 +99,19 @@ public class Browser {
                 .window(driver().getWindowHandles().toArray()[number].toString());
     }
 
-
-
-    // DEPRECATED
-    @Deprecated
-    public String getRemoteSessionId() {
-        return ((RemoteWebDriver) ((EventFiringWebDriver) driver()).getWrappedDriver()).getSessionId().toString();
-    }
+    //DEPRECATED
     @Deprecated
     public String getClipboardContent() throws IOException, UnsupportedFlavorException {
         return getSession().isSelenoid()
                 ?
-                new OkHttpClient().newCall(new Request.Builder().url("http://3.230.127.230:4444" + "/clipboard/" + getRemoteSessionId()).build()).execute().body().string()
+                new OkHttpClient().newCall(new Request.Builder().url(getSession().getRemoteWebDriverUrl() + "/clipboard/" + getSession().getSessionId()).build()).execute().body().string()
                 :
                 Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
     }
+
     @Deprecated
     public String getSelenoidLink(String fileName) throws IOException {
-        String downloadLink = "http://3.230.127.230:4444" + "/download/" + getRemoteSessionId() + "/" + fileName.replace(" ", "%20");
-        //logger.info("Selenoid download link: " + downloadLink);
+        String downloadLink = getSession().getRemoteWebDriverUrl() + "/download/" + getSession().getSessionId() + "/" + fileName.replace(" ", "%20");
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(downloadLink).openConnection();
             await().atMost(20, SECONDS)
@@ -128,5 +123,6 @@ public class Browser {
         }
         return downloadLink;
     }
+
 
 }
