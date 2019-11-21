@@ -1,5 +1,6 @@
 package com.loliktest.ufit.listeners.testng;
 
+import com.loliktest.ufit.TestNgThread;
 import io.qameta.allure.Allure;
 import io.qameta.allure.listener.TestLifecycleListener;
 import io.qameta.allure.model.Status;

@@ -2,13 +2,12 @@ package com.loliktest.ufit;
 
 import com.loliktest.ufit.listeners.BrowserListener;
 import io.qameta.allure.Allure;
-import org.testng.ISuite;
-import org.testng.ISuiteListener;
+import org.testng.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class UFitListener implements ISuiteListener {
+public class UFitListener implements ISuiteListener, ITestListener {
 
     static Map<String, String> testNgParameters = new HashMap<>();
 
@@ -31,5 +30,40 @@ public class UFitListener implements ISuiteListener {
                 continue;
             }
         }
+    }
+
+    @Override
+    public void onTestStart(ITestResult result) {
+        TestNgThread.setCurrentThread(result);
+    }
+
+    @Override
+    public void onTestSuccess(ITestResult result) {
+
+    }
+
+    @Override
+    public void onTestFailure(ITestResult result) {
+
+    }
+
+    @Override
+    public void onTestSkipped(ITestResult result) {
+
+    }
+
+    @Override
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+
+    }
+
+    @Override
+    public void onStart(ITestContext context) {
+
+    }
+
+    @Override
+    public void onFinish(ITestContext context) {
+
     }
 }
