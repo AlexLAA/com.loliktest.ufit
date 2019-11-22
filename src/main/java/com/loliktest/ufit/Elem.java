@@ -2,6 +2,7 @@ package com.loliktest.ufit;
 
 import com.loliktest.ufit.listeners.IElemListener;
 import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -22,7 +23,11 @@ import static com.loliktest.ufit.UFitBrowser.browser;
  */
 public class Elem {
 
-    private List<IElemListener> listeners = new ArrayList<>();
+    private static List<IElemListener> listeners = new ArrayList<>();
+
+    static void setElemListener(IElemListener listener){
+        listeners.add(listener);
+    }
 
     private String name;
     private By by;
@@ -100,7 +105,7 @@ public class Elem {
 
 
     public void type(String text) {
-        Allure.step("Type: " + text + " in " + toString(), () -> {
+        Allure.step("Type: " + text + " in " + getName(), () -> {
                     find().clear();
                     find().sendKeys(text);
                     getWebDriverWait().until(ExpectedConditions.textToBePresentInElementValue(by, text));
@@ -131,6 +136,11 @@ public class Elem {
         for (Character character : text.toCharArray()) {
             find().sendKeys(character.toString());
         }
+    }
+
+    public void typeByCharAndCheck(String text){
+        typeByChar(text);
+        until(ExpectedConditions.textToBePresentInElementValue(by, text), Timeout.getDefaultElem());
     }
 
     public void typeByJs(String text) {
@@ -168,7 +178,7 @@ public class Elem {
 
     public void click(long timeout) {
         listeners.forEach(l -> l.click(this));
-        Allure.step("Click " + toString(), () -> {
+        Allure.step("Click " + getName(), () -> {
             find(timeout);
             getWebDriverWait(timeout).until(ExpectedConditions.elementToBeClickable(by));
             getWebDriverWait(timeout).until(CustomConditions.click(by));
@@ -211,12 +221,24 @@ public class Elem {
     }
 
     public void clearBackspace(String expectedValue) {
+        clearByKey(expectedValue, Keys.BACK_SPACE);
+    }
+
+    public void clearDelete(){
+        clearDelete("");
+    }
+
+    public void clearDelete(String expectedValue){
+        clearByKey(expectedValue, Keys.DELETE);
+    }
+
+    public void clearByKey(String expectedValue, Keys key) {
         int times = 0;
         while (!getAttribute("value").equals(expectedValue)) {
             if (times > 1000) {
                 throw new WebDriverException("Can't clear value: " + toString());
             }
-            find().sendKeys(Keys.BACK_SPACE);
+            find().sendKeys(key);
             times++;
         }
     }
@@ -243,26 +265,32 @@ public class Elem {
                 .release(target.find())
                 .perform();
     }
-
+    @Step
     public void hoverOver(){
         hoverOver(Timeout.getDefaultElem());
     }
-
+    @Step
     public void hoverOver(long timeout){
         actions().moveToElement(find(timeout)).perform();
     }
-
+    @Step
     public void hoverAndClick(){
         actions().moveToElement(find()).click().perform();
     }
-
+    @Step
     public void scrollTo(){
         browser().devTools.executeScript("arguments[0].scrollIntoView(true);", find());
     }
-
+    @Step
     public void clickByCoordinates(int x, int y){
         actions().moveToElement(find(), x, y).click().perform();
     }
+
+    @Step
+    public String getInnerHtml(){
+        return browser().devTools.executeScript("return arguments[0].innerHTML", find());
+    }
+
     // WAIT
 
     private void checkAssert(Object detailMessage) {
@@ -519,6 +547,14 @@ public class Elem {
         return until(ExpectedConditions.numberOfElementsToBe(by, number), timeout);
     }
 
+    public <V> boolean is(Function<? super WebDriver, V> isTrue){
+        return is(isTrue, Timeout.getDefaultElem());
+    }
+
+    public <V> boolean is(Function<? super WebDriver, V> isTrue, long timeout){
+        return until(isTrue, timeout);
+    }
+
     private <V> boolean until(Function<? super WebDriver, V> isTrue, long timeout) {
         try {
             getWebDriverWait(timeout).pollingEvery(Duration.ofMillis(200)).until(isTrue);
@@ -547,6 +583,15 @@ public class Elem {
     @Deprecated
     public Elem findsElemByText(String text) {
         return findList().stream().filter(o -> o.getText().equals(text)).findFirst().orElseThrow(() -> new AssertionError("Element with text: " + text + " NOT FOUND"));
+    }
+
+
+    public void switchToFrame(long timeout){
+        until(CustomConditions.frameToBeAvailableAndSwitchToIt(by), timeout);
+    }
+
+    public void switchToFrame(){
+        switchToFrame(Timeout.getDefaultElem());
     }
 
     @Override
@@ -618,6 +663,26 @@ public class Elem {
             };
         }
 
+        public static ExpectedCondition<Boolean> frameToBeAvailableAndSwitchToIt(final By locator) {
+            return new ExpectedCondition<Boolean>() {
+                @Override
+                public Boolean apply(WebDriver driver) {
+                    try {
+                        driver.switchTo().frame(driver.findElement(locator));
+                        return true;
+                    } catch (NoSuchFrameException | StaleElementReferenceException e) {
+                        return false;
+                    }
+                }
+
+                @Override
+                public String toString() {
+                    return "frame to be available: " + locator;
+                }
+            };
+        }
+
     }
+
 
 }

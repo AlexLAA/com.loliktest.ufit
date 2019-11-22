@@ -19,10 +19,11 @@ public class AllureAttachmentListener implements TestLifecycleListener {
         logger.info("beforeTestStop");
         Status status = result.getStatus();
         if (status == Status.FAILED || status == Status.BROKEN) {
+            Allure.parameter("Browser: Failed URL", browser().getCurrentUrl());
             browser().getScreenOnFail();
             Allure.addAttachment("Browser: Console Logs",  browser().devTools.getConsoleErrors().stream().map(logEntry -> logEntry.toJson() + "\n").collect(Collectors.joining()));
             Allure.addAttachment("Browser: Cookies", browser().driver().manage().getCookies().stream().map(cookie -> cookie.getName() + " : " + cookie.getValue() + "\n").collect(Collectors.joining()));
-            Allure.addAttachment("Browser: HTML Page", "text/html", browser().driver().getPageSource(), ".html");
+            //Allure.addAttachment("Browser: HTML Page", "text/html", browser().driver().getPageSource(), ".html");
         }
     }
 

@@ -30,6 +30,10 @@ public class BrowserSession {
         return failId;
     }
 
+    void setFailId(int failId){
+        this.failId = failId;
+    }
+
     public byte[] getFailedScreen() {
         return failedScreen;
     }
@@ -48,12 +52,12 @@ public class BrowserSession {
 
     @Beta
     public String getRemoteWebDriverUrl(){
-        return ((HttpCommandExecutor)((RemoteWebDriver)((EventFiringWebDriver) driver).getWrappedDriver()).getCommandExecutor()).getAddressOfRemoteServer().toString().replace("/wd/hub", "");
+        return ((HttpCommandExecutor)((RemoteWebDriver) driver).getCommandExecutor()).getAddressOfRemoteServer().toString().replace("/wd/hub", "");
     }
 
     @Beta
     public String getSessionId() {
-        return ((RemoteWebDriver) ((EventFiringWebDriver) driver).getWrappedDriver()).getSessionId().toString();
+        return ((RemoteWebDriver) driver).getSessionId().toString();
     }
 
 }

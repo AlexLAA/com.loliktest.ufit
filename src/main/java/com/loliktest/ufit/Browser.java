@@ -80,13 +80,14 @@ public class Browser {
     }
 
     //BROWSER ACTIONS
-
+    @Step("Open: {0}")
     public void get(String url) {
         listeners.forEach(l -> l.get(url, this));
         driver().get(url);
         wait.pageLoadComplete();
     }
 
+    @Step("Browser Quit")
     public void quit() {
         listeners.forEach(l -> l.quite(this));
         getBrowsersList().clear(); // TODO Make for each instance
@@ -101,22 +102,37 @@ public class Browser {
         return devTools.executeScript("return self.name");
     }
 
+    //SWITCH TO
     @Step
     public WebDriver switchToWindow(int number) {
-        return driver().switchTo()
-                .window(driver().getWindowHandles().toArray()[number].toString());
+        return driver().switchTo().window(driver().getWindowHandles().toArray()[number].toString());
+    }
+
+    @Step
+    public void switchToFrame(Elem iFrameElem){
+        iFrameElem.switchToFrame();
+    }
+
+    @Step
+    public void switchToParentFrame(){
+        driver().switchTo().parentFrame();
+    }
+
+    @Step
+    public void switchToDefaultContent(){
+        driver().switchTo().defaultContent();
     }
 
     //SCREENSHOTS
     public byte[] getScreenOnFail() {
         if (getSession().getFailId() != TestNgThread.currentThread().getResult().hashCode()) {
             getSession().setFailedScreen(makeScreenshot(OutputType.BYTES));
+            getSession().setFailId(TestNgThread.currentThread().getResult().hashCode());
             Allure.addAttachment("Browser: Screen Failed", new ByteArrayInputStream(getSession().getFailedScreen()));
         }
         return getSession().getFailedScreen();
     }
 
-    @Step
     public <T> T makeScreenshot(OutputType<T> target){
         return ((TakesScreenshot) browser().driver()).getScreenshotAs(target);
     }

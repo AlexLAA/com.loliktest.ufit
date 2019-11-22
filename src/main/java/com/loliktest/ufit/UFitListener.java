@@ -1,6 +1,7 @@
 package com.loliktest.ufit;
 
 import com.loliktest.ufit.listeners.BrowserListener;
+import com.loliktest.ufit.listeners.ElemListener;
 import io.qameta.allure.Allure;
 import org.testng.*;
 
@@ -18,6 +19,7 @@ public class UFitListener implements ISuiteListener, ITestListener {
     @Override
     public void onStart(ISuite suite) {
         Browser.setBrowserListener(new BrowserListener());
+        Elem.setElemListener(new ElemListener());
         testNgParameters.put("browser", suite.getParameter("browser"));
     }
 

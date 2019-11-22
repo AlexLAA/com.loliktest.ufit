@@ -1,6 +1,5 @@
 package com.loliktest.ufit;
 
-import com.loliktest.ufit.listeners.BrowserListener;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;

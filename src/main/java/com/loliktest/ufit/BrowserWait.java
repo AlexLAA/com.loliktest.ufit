@@ -56,6 +56,17 @@ public class BrowserWait {
         return isUrlEquals(url, Timeout.getDefault());
     }
 
+    public boolean isUrlMatches(String regex, long timeout) {
+        if (assertMessage == null) assertMessage = "URL NOT Matches: " + regex;
+        return until(ExpectedConditions.urlMatches(regex), timeout);
+    }
+
+    public boolean isUrlMatches(String regex){
+        return isUrlMatches(regex, Timeout.getDefault());
+    }
+
+
+
     public boolean isNumberOfWindowsToBe(int count, long timeout) {
         return until(ExpectedConditions.numberOfWindowsToBe(count), timeout);
     }
