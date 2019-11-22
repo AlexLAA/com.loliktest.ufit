@@ -14,9 +14,24 @@ public class BrowserSession {
 
     public WebDriver driver;
     Map<String, Object> parameters = new HashMap<>();
+    private int failId;
+
+    void setFailedScreen(byte[] failedScreen) {
+        this.failedScreen = failedScreen;
+    }
+
+    private byte[] failedScreen;
 
     void setParameters(Map<String, Object> parameters){
         this.parameters = parameters;
+    }
+
+    int getFailId(){
+        return failId;
+    }
+
+    public byte[] getFailedScreen() {
+        return failedScreen;
     }
 
     public boolean isMobile(){

@@ -1,24 +1,32 @@
 package com.loliktest.ufit;
 
 import com.loliktest.ufit.listeners.IBrowserListener;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.awaitility.core.ConditionTimeoutException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.testng.Assert;
+import org.testng.ITestResult;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.loliktest.ufit.UFitBrowser.browser;
 import static com.loliktest.ufit.UFitBrowser.getBrowsersList;
@@ -97,6 +105,20 @@ public class Browser {
     public WebDriver switchToWindow(int number) {
         return driver().switchTo()
                 .window(driver().getWindowHandles().toArray()[number].toString());
+    }
+
+    //SCREENSHOTS
+    public byte[] getScreenOnFail() {
+        if (getSession().getFailId() != TestNgThread.currentThread().getResult().hashCode()) {
+            getSession().setFailedScreen(makeScreenshot(OutputType.BYTES));
+            Allure.addAttachment("Browser: Screen Failed", new ByteArrayInputStream(getSession().getFailedScreen()));
+        }
+        return getSession().getFailedScreen();
+    }
+
+    @Step
+    public <T> T makeScreenshot(OutputType<T> target){
+        return ((TakesScreenshot) browser().driver()).getScreenshotAs(target);
     }
 
     //DEPRECATED

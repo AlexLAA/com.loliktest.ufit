@@ -19,4 +19,8 @@ public class TestNgThread {
     public static TestNgThread currentThread(){
         return CURRENT_THREAD.get();
     }
+
+    public ITestResult getResult(){
+        return result;
+    }
 }
