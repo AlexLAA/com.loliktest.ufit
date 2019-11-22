@@ -178,7 +178,7 @@ public class Elem {
 
     public void click(long timeout) {
         listeners.forEach(l -> l.click(this));
-        Allure.step("Click " + getName(), () -> {
+        Allure.step("Click: " + getName(), () -> {
             find(timeout);
             getWebDriverWait(timeout).until(ExpectedConditions.elementToBeClickable(by));
             getWebDriverWait(timeout).until(CustomConditions.click(by));
