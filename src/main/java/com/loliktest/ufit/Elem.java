@@ -105,6 +105,7 @@ public class Elem {
 
 
     public void type(String text) {
+        listeners.forEach(l -> l.type(text, this));
         Allure.step("Type: " + text + " in " + getName(), () -> {
                     find().clear();
                     find().sendKeys(text);

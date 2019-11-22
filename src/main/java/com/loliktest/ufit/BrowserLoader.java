@@ -16,8 +16,16 @@ class BrowserLoader {
                 .orElse(new DefaultLocalBrowser());
     }
 
+    /**
+     * Get 'browser' property. Priorities: testng.xml parameter -> maven -> default
+     * @return
+     */
     private static String getParameterBrowser() {
-        return Optional.ofNullable(UFitListener.getParameter("browser")).orElse("DefaultBrowserConfig");
+        return Optional.ofNullable(UFitListener.getParameter("browser")) // XML
+                .orElse(Optional.ofNullable(System.getProperty("browser")) // MAVEN
+                        .orElse("DefaultBrowserConfig")); // DEFAULT
     }
+
+
 
 }
