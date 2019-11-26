@@ -470,6 +470,9 @@ public class Elem {
             checkAssert("Value in Attribute '" + attribute + "': '" + value + "' not found in element " + toString() + " timeout: " + timeout, e);
             return false;
         }
+        finally {
+            assertIt = false;
+        }
     }
 
     public boolean isContainsAttribute(String attribute) {
@@ -507,6 +510,9 @@ public class Elem {
             checkAssert("Element: " + toString() + " Not Parent of " + child.toString(), e);
             return false;
         }
+        finally {
+            assertIt = false;
+        }
     }
 
 
@@ -520,6 +526,9 @@ public class Elem {
         } catch (AssertionError e) {
             checkAssert("Element: " + toString() + " Not Child of " + parent.toString(), e);
             return false;
+        }
+        finally {
+            assertIt = false;
         }
     }
 
