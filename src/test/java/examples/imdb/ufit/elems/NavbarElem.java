@@ -22,4 +22,6 @@ public class NavbarElem {
         searchButton.click();
         return new SearchPage();
     }
+
+
 }

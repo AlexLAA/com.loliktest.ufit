@@ -6,14 +6,9 @@
 
     <groupId>com.loliktest</groupId>
     <artifactId>ufit</artifactId>
-    <version>0.0.52</version>
+    <version>0.0.58</version>
 
     <distributionManagement>
-<!--        <repository>
-            <id>github</id>
-            <name>GitHub AlexLAA Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/AlexLAA/com.loliktest.ufit</url>
-        </repository>-->
             <repository>
                 <id>artifactory</id>
                 <name>artifactory-releases</name>

@@ -87,7 +87,6 @@ public class Browser {
         wait.pageLoadComplete();
     }
 
-    @Step("Browser Quit")
     public void quit() {
         listeners.forEach(l -> l.quite(this));
         getBrowsersList().clear(); // TODO Make for each instance
@@ -99,7 +98,7 @@ public class Browser {
     }
 
     public String getCurrentFrame() {
-        return devTools.executeScript("return self.name");
+        return (String) devTools.executeScript("return self.name");
     }
 
     //SWITCH TO

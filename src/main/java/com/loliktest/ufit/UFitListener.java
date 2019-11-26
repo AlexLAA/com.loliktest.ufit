@@ -8,7 +8,7 @@ import org.testng.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UFitListener implements ISuiteListener, ITestListener {
+public class UFitListener implements ISuiteListener, ITestListener, IConfigurationListener2 {
 
     static Map<String, String> testNgParameters = new HashMap<>();
 
@@ -67,5 +67,25 @@ public class UFitListener implements ISuiteListener, ITestListener {
     @Override
     public void onFinish(ITestContext context) {
 
+    }
+
+    @Override
+    public void onConfigurationSuccess(ITestResult result) {
+
+    }
+
+    @Override
+    public void onConfigurationFailure(ITestResult result) {
+
+    }
+
+    @Override
+    public void onConfigurationSkip(ITestResult result) {
+
+    }
+
+    @Override
+    public void beforeConfiguration(ITestResult result) {
+        TestNgThread.setCurrentThread(result);
     }
 }

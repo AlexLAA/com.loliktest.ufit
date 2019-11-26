@@ -8,9 +8,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
 public @interface Selector {
+
     String value();
 
     int initialIndex() default 1; //FOR COLLECTIONS
 
     int delta() default 1; //STEP
+
 }

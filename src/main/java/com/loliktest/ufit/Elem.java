@@ -289,7 +289,7 @@ public class Elem {
 
     @Step
     public String getInnerHtml(){
-        return browser().devTools.executeScript("return arguments[0].innerHTML", find());
+        return (String) browser().devTools.executeScript("return arguments[0].innerHTML", find());
     }
 
     // WAIT
@@ -629,7 +629,7 @@ public class Elem {
                     try {
                         driver.findElement(locator).click();
                         return true;
-                    } catch (ElementClickInterceptedException | NoSuchElementException e) {
+                    } catch (ElementClickInterceptedException | NoSuchElementException | StaleElementReferenceException e) {
                         message = e.getMessage();
                         return false;
                     }

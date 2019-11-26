@@ -12,12 +12,12 @@ import static com.loliktest.ufit.UFitBrowser.browser;
 
 public class DevTools {
 
-    public String executeScript(String script, Object... args) {
-        return (String) ((JavascriptExecutor) browser().driver()).executeScript(script, args);
+    public Object executeScript(String script, Object... args) {
+        return ((JavascriptExecutor) browser().driver()).executeScript(script, args);
     }
 
-    public String executeAsyncScript(String script, Object... args){
-        return (String) ((JavascriptExecutor) browser().driver()).executeAsyncScript(script, args);
+    public Object executeAsyncScript(String script, Object... args){
+        return ((JavascriptExecutor) browser().driver()).executeAsyncScript(script, args);
     }
 
 
