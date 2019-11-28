@@ -2,19 +2,17 @@ package com.loliktest.ufit;
 
 import com.loliktest.ufit.listeners.IBrowserListener;
 import io.qameta.allure.Allure;
-import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
+import org.apache.log4j.Logger;
 import org.awaitility.core.ConditionTimeoutException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.testng.Assert;
-import org.testng.ITestResult;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -25,8 +23,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.loliktest.ufit.UFitBrowser.browser;
 import static com.loliktest.ufit.UFitBrowser.getBrowsersList;
@@ -41,19 +37,20 @@ public class Browser {
     public DevTools devTools = new DevTools();
     public BrowserWait wait = new BrowserWait();
     private BrowserSession session = new BrowserSession();
+    private static Logger logger = Logger.getLogger(Browser.class);
 
     Browser(WebDriver driver) {
         listeners.forEach(l -> l.open(this));
         session.driver = driver;
     }
 
-    Browser(IBrowserConfig config){
+    Browser(IBrowserConfig config) {
         listeners.forEach(l -> l.open(this));
         session.driver = config.setupDriver();
         session.setParameters(config.parameters());
     }
 
-    public BrowserSession getSession(){
+    public BrowserSession getSession() {
         return session;
     }
 
@@ -61,10 +58,9 @@ public class Browser {
         return getSession().driver;
     }
 
-    public Actions actions(){
+    public Actions actions() {
         return new Actions(driver());
     }
-
 
 
     public void sleep(long millis) {
@@ -108,17 +104,17 @@ public class Browser {
     }
 
     @Step
-    public void switchToFrame(Elem iFrameElem){
+    public void switchToFrame(Elem iFrameElem) {
         iFrameElem.switchToFrame();
     }
 
     @Step
-    public void switchToParentFrame(){
+    public void switchToParentFrame() {
         driver().switchTo().parentFrame();
     }
 
     @Step
-    public void switchToDefaultContent(){
+    public void switchToDefaultContent() {
         driver().switchTo().defaultContent();
     }
 
@@ -132,18 +128,28 @@ public class Browser {
         return getSession().getFailedScreen();
     }
 
-    public <T> T makeScreenshot(OutputType<T> target){
+    public <T> T makeScreenshot(OutputType<T> target) {
         return ((TakesScreenshot) browser().driver()).getScreenshotAs(target);
     }
 
     //DEPRECATED
     @Deprecated
     public String getClipboardContent() throws IOException, UnsupportedFlavorException {
-        return getSession().isSelenoid()
-                ?
-                new OkHttpClient().newCall(new Request.Builder().url(getSession().getRemoteWebDriverUrl() + "/clipboard/" + getSession().getSessionId()).build()).execute().body().string()
-                :
-                Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
+        String content = null;
+        if (getSession().isSelenoid()) {
+            Response response = null;
+            try {
+                response = new OkHttpClient().newCall(new Request.Builder().url(getSession().getRemoteWebDriverUrl() + "/clipboard/" + getSession().getSessionId()).build()).execute();
+                content = response.body().string();
+            } catch (IOException e) {
+                logger.error("Can't receive SELENOID clipboard content: " + e);
+            } finally {
+                response.close();
+            }
+        } else {
+            content = Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
+        }
+        return content;
     }
 
     @Deprecated
