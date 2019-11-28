@@ -17,8 +17,7 @@ import org.testng.Assert;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -44,13 +43,13 @@ public class Browser {
         session.driver = driver;
     }
 
-    Browser(IBrowserConfig config) {
+    Browser(IBrowserConfig config){
         listeners.forEach(l -> l.open(this));
         session.driver = config.setupDriver();
         session.setParameters(config.parameters());
     }
 
-    public BrowserSession getSession() {
+    public BrowserSession getSession(){
         return session;
     }
 
@@ -58,9 +57,10 @@ public class Browser {
         return getSession().driver;
     }
 
-    public Actions actions() {
+    public Actions actions(){
         return new Actions(driver());
     }
+
 
 
     public void sleep(long millis) {
@@ -104,17 +104,17 @@ public class Browser {
     }
 
     @Step
-    public void switchToFrame(Elem iFrameElem) {
+    public void switchToFrame(Elem iFrameElem){
         iFrameElem.switchToFrame();
     }
 
     @Step
-    public void switchToParentFrame() {
+    public void switchToParentFrame(){
         driver().switchTo().parentFrame();
     }
 
     @Step
-    public void switchToDefaultContent() {
+    public void switchToDefaultContent(){
         driver().switchTo().defaultContent();
     }
 
@@ -128,28 +128,22 @@ public class Browser {
         return getSession().getFailedScreen();
     }
 
-    public <T> T makeScreenshot(OutputType<T> target) {
+    public <T> T makeScreenshot(OutputType<T> target){
         return ((TakesScreenshot) browser().driver()).getScreenshotAs(target);
     }
 
     //DEPRECATED
     @Deprecated
     public String getClipboardContent() throws IOException, UnsupportedFlavorException {
-        String content = null;
         if (getSession().isSelenoid()) {
-            Response response = null;
-            try {
-                response = new OkHttpClient().newCall(new Request.Builder().url(getSession().getRemoteWebDriverUrl() + "/clipboard/" + getSession().getSessionId()).build()).execute();
-                content = response.body().string();
+            try (Response response = new OkHttpClient().newCall(new Request.Builder().url(getSession().getRemoteWebDriverUrl() + "/clipboard/" + getSession().getSessionId()).build()).execute()) {
+                return response.body().string();
             } catch (IOException e) {
-                logger.error("Can't receive SELENOID clipboard content: " + e);
-            } finally {
-                response.close();
+                throw new RuntimeException("Can't get clipboard content from selenoid container: " + e);
             }
         } else {
-            content = Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
+            return Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
         }
-        return content;
     }
 
     @Deprecated
