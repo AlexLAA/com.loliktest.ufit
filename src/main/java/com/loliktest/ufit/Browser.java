@@ -6,7 +6,6 @@ import io.qameta.allure.Step;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.apache.log4j.Logger;
 import org.awaitility.core.ConditionTimeoutException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -17,7 +16,8 @@ import org.testng.Assert;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,7 +36,6 @@ public class Browser {
     public DevTools devTools = new DevTools();
     public BrowserWait wait = new BrowserWait();
     private BrowserSession session = new BrowserSession();
-    private static Logger logger = Logger.getLogger(Browser.class);
 
     Browser(WebDriver driver) {
         listeners.forEach(l -> l.open(this));
