@@ -2,19 +2,16 @@ package com.loliktest.ufit;
 
 import com.loliktest.ufit.listeners.IBrowserListener;
 import io.qameta.allure.Allure;
-import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import org.awaitility.core.ConditionTimeoutException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.testng.Assert;
-import org.testng.ITestResult;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -25,8 +22,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.loliktest.ufit.UFitBrowser.browser;
 import static com.loliktest.ufit.UFitBrowser.getBrowsersList;
@@ -139,11 +134,15 @@ public class Browser {
     //DEPRECATED
     @Deprecated
     public String getClipboardContent() throws IOException, UnsupportedFlavorException {
-        return getSession().isSelenoid()
-                ?
-                new OkHttpClient().newCall(new Request.Builder().url(getSession().getRemoteWebDriverUrl() + "/clipboard/" + getSession().getSessionId()).build()).execute().body().string()
-                :
-                Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
+        if (getSession().isSelenoid()) {
+            try (Response response = new OkHttpClient().newCall(new Request.Builder().url(getSession().getRemoteWebDriverUrl() + "/clipboard/" + getSession().getSessionId()).build()).execute()) {
+                return response.body().string();
+            } catch (IOException e) {
+                throw new RuntimeException("Can't get clipboard content from selenoid container: " + e);
+            }
+        } else {
+            return Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
+        }
     }
 
     @Deprecated
