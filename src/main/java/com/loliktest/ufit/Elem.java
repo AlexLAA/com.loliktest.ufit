@@ -246,8 +246,12 @@ public class Elem {
 
 
     public String getText() {
+        return getText(0);
+    }
+
+    public String getText(long timeout) {
         try {
-            String text = getWebDriverWait(Timeout.getDefaultElem()).until(CustomConditions.getText(by));
+            String text = getWebDriverWait(timeout).until(CustomConditions.getText(by));
             return text;
         } finally {
             assertIt = false;
