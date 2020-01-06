@@ -246,7 +246,7 @@ public class Elem {
 
 
     public String getText() {
-        return getText(0);
+        return getText(Timeout.getDefaultElem());
     }
 
     public String getText(long timeout) {
