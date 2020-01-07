@@ -3,7 +3,6 @@ package com.loliktest.ufit;
 import com.loliktest.ufit.listeners.IElemListener;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import jdk.internal.jline.internal.Nullable;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.loliktest.ufit.UFitBrowser.browser;
