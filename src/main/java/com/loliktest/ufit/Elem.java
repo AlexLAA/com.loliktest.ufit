@@ -35,7 +35,7 @@ public class Elem {
     private int index;
 
     private boolean assertIt = false;
-    private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>(Arrays.asList(AssertionError.class));
+    private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
     public Elem(By by, String name) {
         this.by = by;
