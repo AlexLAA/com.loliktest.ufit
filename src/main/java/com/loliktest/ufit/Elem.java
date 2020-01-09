@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -25,7 +26,7 @@ public class Elem {
 
     private static List<IElemListener> listeners = new ArrayList<>();
 
-    static void setElemListener(IElemListener listener){
+    static void setElemListener(IElemListener listener) {
         listeners.add(listener);
     }
 
@@ -34,6 +35,7 @@ public class Elem {
     private int index;
 
     private boolean assertIt = false;
+    private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>(Arrays.asList(AssertionError.class));
 
     public Elem(By by, String name) {
         this.by = by;
@@ -103,6 +105,15 @@ public class Elem {
         return this;
     }
 
+    public Elem ignoring(Class<? extends Throwable> exceptionType) {
+        ignoredExceptions.add(exceptionType);
+        return this;
+    }
+
+    public Elem ignoreAll(List<Class<? extends Throwable>> exceptionTypes) {
+        ignoredExceptions.addAll(exceptionTypes);
+        return this;
+    }
 
     public void type(String text) {
         listeners.forEach(l -> l.type(text, this));
@@ -139,7 +150,7 @@ public class Elem {
         }
     }
 
-    public void typeByCharAndCheck(String text){
+    public void typeByCharAndCheck(String text) {
         typeByChar(text);
         until(ExpectedConditions.textToBePresentInElementValue(by, text), Timeout.getDefaultElem());
     }
@@ -225,11 +236,11 @@ public class Elem {
         clearByKey(expectedValue, Keys.BACK_SPACE);
     }
 
-    public void clearDelete(){
+    public void clearDelete() {
         clearDelete("");
     }
 
-    public void clearDelete(String expectedValue){
+    public void clearDelete(String expectedValue) {
         clearByKey(expectedValue, Keys.DELETE);
     }
 
@@ -251,10 +262,11 @@ public class Elem {
 
     public String getText(long timeout) {
         try {
-            String text = getWebDriverWait(timeout).until(CustomConditions.getText(by));
+            String text = getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(CustomConditions.getText(by));
             return text;
         } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -270,29 +282,34 @@ public class Elem {
                 .release(target.find())
                 .perform();
     }
+
     @Step
-    public void hoverOver(){
+    public void hoverOver() {
         hoverOver(Timeout.getDefaultElem());
     }
+
     @Step
-    public void hoverOver(long timeout){
+    public void hoverOver(long timeout) {
         actions().moveToElement(find(timeout)).perform();
     }
+
     @Step
-    public void hoverAndClick(){
+    public void hoverAndClick() {
         actions().moveToElement(find()).click().perform();
     }
+
     @Step
-    public void scrollTo(){
+    public void scrollTo() {
         browser().devTools.executeScript("arguments[0].scrollIntoView(true);", find());
     }
+
     @Step
-    public void clickByCoordinates(int x, int y){
+    public void clickByCoordinates(int x, int y) {
         actions().moveToElement(find(), x, y).click().perform();
     }
 
     @Step
-    public String getInnerHtml(){
+    public String getInnerHtml() {
         return (String) browser().devTools.executeScript("return arguments[0].innerHTML", find());
     }
 
@@ -318,13 +335,14 @@ public class Elem {
 
     public boolean isPresent(long timeout) {
         try {
-            getWebDriverWait(timeout).until(ExpectedConditions.presenceOfElementLocated(by));
+            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.presenceOfElementLocated(by));
             return true;
         } catch (TimeoutException e) {
             checkAssert(toString() + " NOT PRESENT timeout: " + timeout, e);
             return false;
         } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -334,13 +352,14 @@ public class Elem {
 
     public boolean isVisible(long timeout) {
         try {
-            getWebDriverWait(timeout).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
             return true;
         } catch (TimeoutException e) {
             checkAssert(e);
             return false;
         } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -368,25 +387,27 @@ public class Elem {
 
     public boolean isNotVisible(long timeout) {
         try {
-            getWebDriverWait(timeout).until(ExpectedConditions.invisibilityOfElementLocated(by));
+            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.invisibilityOfElementLocated(by));
             return true;
         } catch (TimeoutException e) {
             checkAssert(e);
             return false;
         } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
     public boolean isNotPresent(long timeout) {
         try {
-            getWebDriverWait(timeout).until(ExpectedConditions.numberOfElementsToBe(by, 0));
+            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.numberOfElementsToBe(by, 0));
             return true;
         } catch (TimeoutException e) {
             checkAssert(e);
             return false;
         } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -402,13 +423,14 @@ public class Elem {
 
     public boolean isContainsText(String text, long timeout) {
         try {
-            getWebDriverWait(timeout).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
             return true;
         } catch (TimeoutException e) {
             checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
             return false;
         } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -419,13 +441,14 @@ public class Elem {
 
     public boolean isEqualsText(String text, long timeout) {
         try {
-            getWebDriverWait(timeout).until(ExpectedConditions.textToBe(by, text));
+            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBe(by, text));
             return true;
         } catch (TimeoutException e) {
             checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
             return false;
         } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -435,13 +458,14 @@ public class Elem {
 
     public boolean isNotContainsText(String text, long timeout) {
         try {
-            getWebDriverWait(timeout).until(CustomConditions.textNotToBePresentInElementLocated(by, text));
+            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(CustomConditions.textNotToBePresentInElementLocated(by, text));
             return true;
         } catch (TimeoutException e) {
             checkAssert("Text: '" + text + "' found in element " + toString() + " timeout: " + timeout, e);
             return false;
         } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -468,14 +492,14 @@ public class Elem {
 
     public boolean isAttributeContainsValue(String attribute, String value, long timeout) {
         try {
-            getWebDriverWait(timeout).until(ExpectedConditions.attributeContains(by, attribute, value));
+            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.attributeContains(by, attribute, value));
             return true;
         } catch (TimeoutException e) {
             checkAssert("Value in Attribute '" + attribute + "': '" + value + "' not found in element " + toString() + " timeout: " + timeout, e);
             return false;
-        }
-        finally {
+        } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -513,9 +537,9 @@ public class Elem {
         } catch (AssertionError e) {
             checkAssert("Element: " + toString() + " Not Parent of " + child.toString(), e);
             return false;
-        }
-        finally {
+        } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -530,9 +554,9 @@ public class Elem {
         } catch (AssertionError e) {
             checkAssert("Element: " + toString() + " Not Child of " + parent.toString(), e);
             return false;
-        }
-        finally {
+        } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -561,23 +585,24 @@ public class Elem {
         return until(ExpectedConditions.numberOfElementsToBe(by, number), timeout);
     }
 
-    public <V> boolean is(Function<? super WebDriver, V> isTrue){
+    public <V> boolean is(Function<? super WebDriver, V> isTrue) {
         return is(isTrue, Timeout.getDefaultElem());
     }
 
-    public <V> boolean is(Function<? super WebDriver, V> isTrue, long timeout){
+    public <V> boolean is(Function<? super WebDriver, V> isTrue, long timeout) {
         return until(isTrue, timeout);
     }
 
     private <V> boolean until(Function<? super WebDriver, V> isTrue, long timeout) {
         try {
-            getWebDriverWait(timeout).pollingEvery(Duration.ofMillis(200)).until(isTrue);
+            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).pollingEvery(Duration.ofMillis(200)).until(isTrue);
             return true;
         } catch (TimeoutException e) {
             checkAssert(e);
             return false;
         } finally {
             assertIt = false;
+            ignoredExceptions.clear();
         }
     }
 
@@ -594,17 +619,18 @@ public class Elem {
         AtomicInteger integer = new AtomicInteger(1);
         return this.finds().stream().map(o -> new Elem(this.getBy(), this.getName()).setIndex(integer.getAndIncrement())).collect(Collectors.toList());
     }
+
     @Deprecated
     public Elem findsElemByText(String text) {
         return findList().stream().filter(o -> o.getText().equals(text)).findFirst().orElseThrow(() -> new AssertionError("Element with text: " + text + " NOT FOUND"));
     }
 
 
-    public void switchToFrame(long timeout){
+    public void switchToFrame(long timeout) {
         until(CustomConditions.frameToBeAvailableAndSwitchToIt(by), timeout);
     }
 
-    public void switchToFrame(){
+    public void switchToFrame() {
         switchToFrame(Timeout.getDefaultElem());
     }
 
