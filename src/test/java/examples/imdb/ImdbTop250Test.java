@@ -5,7 +5,9 @@ import com.loliktest.ufit.TestNgThread;
 import examples.imdb.ufit.items.MovieItem;
 import examples.imdb.ufit.pages.SearchPage;
 import examples.imdb.ufit.pages.Top250Page;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -20,9 +22,14 @@ public class ImdbTop250Test {
     @Test
     public void asda(){
         browser().get("https://www.imdb.com/chart/top");
-        List<Elem> elems = page.elemItems.get();
+        List<WebElement> finds = new Elem(By.cssSelector(".lister-list > tr:nth-child(n)")).finds();
+        System.out.println(finds.get(2).toString());
+       /* List<Elem> elems = page.elemItems.get();
+
+        //
         elems.forEach(elem -> System.out.println(elem.getBy()));
-        System.out.println("");
+        System.out.println("");*/
+
     }
 
     @Test

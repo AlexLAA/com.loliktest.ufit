@@ -19,6 +19,7 @@ public class Elems<T> {
     private long timeout = 10;
     private int initialIndex = 1;
     private int delta = 1;
+    private boolean complex;
     private boolean isUFit;
     public Elem elem;
 
@@ -48,7 +49,7 @@ public class Elems<T> {
     }
 
     public List<T> get() {
-        return isUFit ? UFit.initCollections(elem, type, initialIndex, delta) : PageElements.initCollection(elem, type, initialIndex, delta);
+        return isUFit ? UFit.initCollections(elem, type, initialIndex, delta, complex) : PageElements.initCollection(elem, type, initialIndex, delta);
     }
 
     public T get(Predicate<T> p, String message) {

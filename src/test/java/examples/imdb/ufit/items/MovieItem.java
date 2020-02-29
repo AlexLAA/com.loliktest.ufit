@@ -11,4 +11,8 @@ public class MovieItem {
     @Selector(".imdbRating > strong")
     public Elem rating;
 
+
+    public String getTitle(){
+        return title.getText();
+    }
 }

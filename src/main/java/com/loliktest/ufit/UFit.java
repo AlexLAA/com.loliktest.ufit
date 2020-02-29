@@ -1,6 +1,7 @@
 package com.loliktest.ufit;
 
 import com.google.common.base.CaseFormat;
+import com.loliktest.ufit.exceptions.UFitException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.By;
 
@@ -93,6 +94,10 @@ public class UFit {
                 isUFit.setAccessible(true);
                 isUFit.set(inst, true);
 
+                Field complex = ((Elems) inst).getClass().getDeclaredField("complex");
+                complex.setAccessible(true);
+                complex.set(inst, true);
+
                 Field initialIndex = ((Elems) inst).getClass().getDeclaredField("initialIndex");
                 initialIndex.setAccessible(true);
                 initialIndex.set(inst, field.getAnnotation(Selector.class).initialIndex());
@@ -114,9 +119,12 @@ public class UFit {
         }
     }
 
-    static List initCollections(Elem elem, Class cl, int initialIndex, int delta) {
+    static List initCollections(Elem elem, Class cl, int initialIndex, int delta, boolean complex) {
         AtomicInteger count = new AtomicInteger(initialIndex);
         List collection = new ArrayList<>();
+        if(complex){
+            return initComplexCollection(elem, cl, initialIndex, delta, complex);
+        }
         if(cl.getSimpleName().equals("Elem")){
             elem.finds().forEach(e -> collection.add(elem.setIndex(count.getAndAdd(delta))));
         } else {
@@ -131,6 +139,35 @@ public class UFit {
                     ex.printStackTrace();
                 }
             });
+        }
+        return collection;
+    }
+
+    static List initComplexCollection(Elem elem, Class cl, int initialIndex, int delta, boolean complex){
+        AtomicInteger count = new AtomicInteger(initialIndex);
+        List collection = new ArrayList<>();
+        int size = elem.finds().size();
+        while (size != collection.size()){
+            if(count.get() > 1000){
+                throw new UFitException("Complex collection not found Elements in index less then 1000");
+            }
+            if(elem.setIndex(count.getAndIncrement()).isPresent(0)) {
+                if (cl.getSimpleName().equals("Elem")) {
+                    elem.finds().forEach(e -> collection.add(elem.setIndex(count.get())));
+                } else {
+                    elem.finds().forEach(e -> {
+                        try {
+                            Object o = cl.newInstance();
+                            initElements(o, elem.setIndex(count.get()));
+                            collection.add(o);
+                        } catch (InstantiationException ex) {
+                            ex.printStackTrace();
+                        } catch (IllegalAccessException ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                }
+            }
         }
         return collection;
     }
