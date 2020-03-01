@@ -10,8 +10,8 @@ public class TestElems {
     Top250Page page = new Top250Page();
 
     @Test
-    public void searchElems(){
+    public void complexElems(){
         browser().get("https://www.imdb.com/chart/top");
-        page.elemsRating.get().forEach(e -> System.out.println(e.getAttribute("class")));
+        page.elemsRating.get().forEach(e -> System.out.println(e.title.getSelector()));
     }
 }

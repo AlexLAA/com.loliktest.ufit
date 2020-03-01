@@ -153,9 +153,8 @@ public class UFit {
             }
             if(elem.setIndex(count.getAndIncrement()).isPresent(0)) {
                 if (cl.getSimpleName().equals("Elem")) {
-                    elem.finds().forEach(e -> collection.add(elem.setIndex(count.get())));
+                    collection.add(elem.setIndex(count.get()));
                 } else {
-                    elem.finds().forEach(e -> {
                         try {
                             Object o = cl.newInstance();
                             initElements(o, elem.setIndex(count.get()));
@@ -165,7 +164,6 @@ public class UFit {
                         } catch (IllegalAccessException ex) {
                             ex.printStackTrace();
                         }
-                    });
                 }
             }
         }

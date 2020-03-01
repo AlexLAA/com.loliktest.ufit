@@ -6,19 +6,19 @@
 
     <groupId>com.loliktest</groupId>
     <artifactId>ufit</artifactId>
-    <version>0.0.65-beta</version>
+    <version>0.0.66-beta</version>
 
     <distributionManagement>
-            <repository>
-                <id>artifactory</id>
-                <name>artifactory-releases</name>
-                <url>https://pdffiller.jfrog.io/pdffiller/qa</url>
-            </repository>
-            <snapshotRepository>
-                <id>artifactory</id>
-                <name>artifactory-snapshots</name>
-                <url>https://pdffiller.jfrog.io/pdffiller/qa</url>
-            </snapshotRepository>
+        <repository>
+            <id>artifactory</id>
+            <name>artifactory-releases</name>
+            <url>https://artifactory.infrateam.xyz/maven-qa</url>
+        </repository>
+        <snapshotRepository>
+            <id>artifactory</id>
+            <name>artifactory-snapshots</name>
+            <url>https://artifactory.infrateam.xyz/maven-qa</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <properties>

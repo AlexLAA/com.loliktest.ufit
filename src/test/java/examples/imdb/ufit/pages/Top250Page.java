@@ -29,7 +29,7 @@ public class Top250Page {
     public Elems<Elem> elemItems;
 
     @Selector(value = ".lister-list > tr:nth-child(1) > td[class*='rating']", complex = true)
-    public Elems<Elem> elemsRating;
+    public Elems<MovieItem> elemsRating;
 
     public Top250Page() {
         UFit.initPage(this);
