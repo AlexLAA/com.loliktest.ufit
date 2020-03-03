@@ -15,6 +15,6 @@ public @interface Selector {
 
     int delta() default 1; //STEP
 
-    boolean complex() default false;
+    boolean searchIndex() default false;
 
 }

@@ -28,7 +28,7 @@ public class Top250Page {
     @Selector(".lister-list > tr")
     public Elems<Elem> elemItems;
 
-    @Selector(value = ".lister-list > tr:nth-child(1) > td[class*='rating']", complex = true)
+    @Selector(value = ".lister-list > tr:nth-child(1) > td[class*='rating']", searchIndex = true)
     public Elems<MovieItem> elemsRating;
 
     public Top250Page() {

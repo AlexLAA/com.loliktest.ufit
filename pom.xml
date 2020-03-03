@@ -6,7 +6,7 @@
 
     <groupId>com.loliktest</groupId>
     <artifactId>ufit</artifactId>
-    <version>0.0.66-beta</version>
+    <version>0.0.67</version>
 
     <distributionManagement>
         <repository>
