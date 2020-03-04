@@ -96,7 +96,7 @@ public class UFit {
 
                 Field complex = ((Elems) inst).getClass().getDeclaredField("complex");
                 complex.setAccessible(true);
-                complex.set(inst, true);
+                complex.set(inst, field.getAnnotation(Selector.class).searchIndex());
 
                 Field initialIndex = ((Elems) inst).getClass().getDeclaredField("initialIndex");
                 initialIndex.setAccessible(true);

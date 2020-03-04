@@ -88,6 +88,7 @@ public class Browser {
             getBrowsersList().forEach(b -> b.driver().quit());
         } finally {
             getBrowsersList().clear(); // TODO Make for each instance
+
         }
     }
 
