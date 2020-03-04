@@ -148,16 +148,17 @@ public class UFit {
         List collection = new ArrayList<>();
         int size = elem.finds().size();
         while (size != collection.size()){
+            int index = count.get();
             if(count.get() > 1000){
                 throw new UFitException("Complex collection not found Elements in index less then 1000");
             }
-            if(elem.setIndex(count.getAndIncrement()).isPresent(0)) {
+            if(elem.setIndex(index).isPresent(0)) {
                 if (cl.getSimpleName().equals("Elem")) {
-                    collection.add(elem.setIndex(count.get()));
+                    collection.add(elem.setIndex(index));
                 } else {
                         try {
                             Object o = cl.newInstance();
-                            initElements(o, elem.setIndex(count.get()));
+                            initElements(o, elem.setIndex(index));
                             collection.add(o);
                         } catch (InstantiationException ex) {
                             ex.printStackTrace();
@@ -166,6 +167,7 @@ public class UFit {
                         }
                 }
             }
+            count.incrementAndGet();
         }
         return collection;
     }

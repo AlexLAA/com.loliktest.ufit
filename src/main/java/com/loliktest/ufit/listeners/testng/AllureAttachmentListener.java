@@ -18,7 +18,7 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
         Status status = result.getStatus();
         if (status == Status.FAILED || status == Status.BROKEN) {
             Allure.parameter("Browser: Failed URL", browser().getCurrentUrl());
-            browsersList().forEach(browser -> browser.getScreenOnFail());
+            browser().getScreenOnFail();
             Allure.addAttachment("Browser: Console Logs",  browser().devTools.getConsoleErrors().stream().map(logEntry -> logEntry.toJson() + "\n").collect(Collectors.joining()));
             Allure.addAttachment("Browser: Cookies", browser().driver().manage().getCookies().stream().map(cookie -> cookie.getName() + " : " + cookie.getValue() + "\n").collect(Collectors.joining()));
             //Allure.addAttachment("Browser: HTML Page", "text/html", browser().driver().getPageSource(), ".html");
@@ -29,7 +29,7 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
         Status status = result.getStatus();
         if (status == Status.FAILED || status == Status.BROKEN) {
             Allure.parameter("Browser: Failed URL", browser().getCurrentUrl());
-            browsersList().forEach(browser -> browser.getScreenOnFail());
+            browser().getScreenOnFail();
             Allure.addAttachment("Browser: Console Logs",  browser().devTools.getConsoleErrors().stream().map(logEntry -> logEntry.toJson() + "\n").collect(Collectors.joining()));
             Allure.addAttachment("Browser: Cookies", browser().driver().manage().getCookies().stream().map(cookie -> cookie.getName() + " : " + cookie.getValue() + "\n").collect(Collectors.joining()));
             //Allure.addAttachment("Browser: HTML Page", "text/html", browser().driver().getPageSource(), ".html");

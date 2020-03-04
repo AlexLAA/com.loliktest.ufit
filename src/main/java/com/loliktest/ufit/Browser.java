@@ -84,8 +84,11 @@ public class Browser {
 
     public void quit() {
         listeners.forEach(l -> l.quite(this));
-        getBrowsersList().clear(); // TODO Make for each instance
-        driver().quit();
+        try {
+            getBrowsersList().forEach(b -> b.driver().quit());
+        } finally {
+            getBrowsersList().clear(); // TODO Make for each instance
+        }
     }
 
     public String getCurrentUrl() {
