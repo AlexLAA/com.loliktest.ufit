@@ -2,16 +2,14 @@ package com.loliktest.ufit;
 
 import org.openqa.selenium.WebDriver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class UFitBrowser {
 
-    private static ThreadLocal<List<Browser>> BROWSERS = ThreadLocal.withInitial(ArrayList::new);
+    private static ThreadLocal<List<Browser>> BROWSERS = ThreadLocal.withInitial(CopyOnWriteArrayList::new);
     private static ThreadLocal<Browser> CURRENT_BROWSER = new ThreadLocal<>();
-    static List<Browser> runtimeBrowsersList = new ArrayList<>();
+    static List<Browser> runtimeBrowsersList = Collections.synchronizedList(new ArrayList<>());
 
     private UFitBrowser() {
     }
@@ -20,7 +18,7 @@ public class UFitBrowser {
         return BROWSERS.get().isEmpty() ? browser(0) : CURRENT_BROWSER.get();
     }
 
-    public static List<Browser> browsersList(){
+    public static List<Browser> browsersList() {
         return BROWSERS.get();
     }
 
@@ -51,6 +49,16 @@ public class UFitBrowser {
 
     public static List<Browser> getBrowsersList(){
         return BROWSERS.get();
+    }
+
+    public static void quitAllBrowsers() {
+        for (Browser browser : runtimeBrowsersList) {
+            try {
+                browser.quit();
+            } catch (Exception e) {
+                continue;
+            }
+        }
     }
 
 
