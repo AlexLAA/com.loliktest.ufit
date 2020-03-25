@@ -2,13 +2,15 @@ package com.loliktest.ufit;
 
 import com.loliktest.ufit.listeners.BrowserListener;
 import com.loliktest.ufit.listeners.ElemListener;
-import io.qameta.allure.Allure;
 import org.testng.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class UFitListener implements ISuiteListener, ITestListener, IConfigurationListener2 {
+import static com.loliktest.ufit.QuitPolicy.*;
+import static com.loliktest.ufit.UFitBrowser.browser;
+
+public class UFitListener implements ISuiteListener, ITestListener, IConfigurationListener2, IClassListener {
 
     static Map<String, String> testNgParameters = new HashMap<>();
 
@@ -21,17 +23,12 @@ public class UFitListener implements ISuiteListener, ITestListener, IConfigurati
         Browser.setBrowserListener(new BrowserListener());
         Elem.setElemListener(new ElemListener());
         testNgParameters.put("browser", suite.getParameter("browser"));
+        testNgParameters.put("ufit.quitpolicy", suite.getParameter("ufit.quitpolicy"));
     }
 
     @Override
     public void onFinish(ISuite suite) {
-        for (Browser browser : UFitBrowser.runtimeBrowsersList) {
-            try {
-                browser.quit();
-            } catch (Exception e) {
-                continue;
-            }
-        }
+        UFitBrowser.quitAllBrowsers();
     }
 
     @Override
@@ -41,17 +38,17 @@ public class UFitListener implements ISuiteListener, ITestListener, IConfigurati
 
     @Override
     public void onTestSuccess(ITestResult result) {
-
+        if (BrowserSession.getQuitPolicy().equals(METHOD)) browser().quit();
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-
+        if (BrowserSession.getQuitPolicy().equals(METHOD)) browser().quit();
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
-
+        if (BrowserSession.getQuitPolicy().equals(METHOD)) browser().quit();
     }
 
     @Override
@@ -66,7 +63,7 @@ public class UFitListener implements ISuiteListener, ITestListener, IConfigurati
 
     @Override
     public void onFinish(ITestContext context) {
-
+        if (BrowserSession.getQuitPolicy().equals(TEST)) browser().quit();
     }
 
     @Override
@@ -87,5 +84,15 @@ public class UFitListener implements ISuiteListener, ITestListener, IConfigurati
     @Override
     public void beforeConfiguration(ITestResult result) {
         TestNgThread.setCurrentThread(result);
+    }
+
+    @Override
+    public void onBeforeClass(ITestClass testClass) {
+
+    }
+
+    @Override
+    public void onAfterClass(ITestClass testClass) {
+        if (BrowserSession.getQuitPolicy().equals(CLASS)) browser().quit();
     }
 }

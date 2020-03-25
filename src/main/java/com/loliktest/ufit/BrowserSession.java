@@ -4,11 +4,11 @@ import com.google.common.annotations.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 
-import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class BrowserSession {
 
@@ -58,6 +58,13 @@ public class BrowserSession {
     @Beta
     public String getSessionId() {
         return ((RemoteWebDriver) driver).getSessionId().toString();
+    }
+
+    public static QuitPolicy getQuitPolicy() {
+        String quitProperty = Optional.ofNullable(UFitListener.getParameter("ufit.quitpolicy"))
+                .orElse(Optional.ofNullable(System.getProperty("ufit.quitpolicy"))
+                        .orElse("suite"));
+        return QuitPolicy.valueOf(quitProperty.toUpperCase());
     }
 
 }
