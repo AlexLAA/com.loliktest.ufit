@@ -10,7 +10,6 @@ import io.qameta.allure.model.TestResult;
 import java.util.stream.Collectors;
 
 import static com.loliktest.ufit.UFitBrowser.browser;
-import static com.loliktest.ufit.UFitBrowser.browsersList;
 
 public class AllureAttachmentListener implements TestLifecycleListener, FixtureLifecycleListener {
 

@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Login DEBUG" parallel="tests" thread-count="1">
+    <test name="Auth">
+        <classes>
+            <class name="tests.TestAllureAttachments"></class>
+        </classes>
+    </test>
+</suite>

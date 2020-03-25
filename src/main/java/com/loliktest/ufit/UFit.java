@@ -150,7 +150,7 @@ public class UFit {
         while (size != collection.size()){
             int index = count.get();
             if(count.get() > 1000){
-                throw new UFitException("Complex collection not found Elements in index less then 1000");
+               return collection;
             }
             if(elem.setIndex(index).isPresent(0)) {
                 if (cl.getSimpleName().equals("Elem")) {
