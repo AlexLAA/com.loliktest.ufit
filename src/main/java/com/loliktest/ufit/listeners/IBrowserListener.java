@@ -6,7 +6,7 @@ public interface IBrowserListener {
 
     void get(String url, Browser browser);
 
-    void quite(Browser browser);
+    void quit(Browser browser);
 
     void open(Browser browser);
 

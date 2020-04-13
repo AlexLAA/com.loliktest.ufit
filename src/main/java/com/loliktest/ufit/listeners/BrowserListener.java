@@ -15,7 +15,7 @@ public class BrowserListener implements IBrowserListener {
     }
 
     @Override
-    public void quite(Browser browser) {
+    public void quit(Browser browser) {
         logger.info("Close Browser");
     }
 

@@ -82,14 +82,19 @@ public class Browser {
         wait.pageLoadComplete();
     }
 
+    @Step
     public void quit() {
-        listeners.forEach(l -> l.quite(this));
+        listeners.forEach(l -> l.quit(this));
         try {
             getBrowsersList().forEach(b -> b.driver().quit());
         } finally {
             getBrowsersList().clear(); // TODO Make for each instance
 
         }
+    }
+
+    public void deleteAllCookies(){
+        driver().manage().deleteAllCookies();
     }
 
     public String getCurrentUrl() {
@@ -135,8 +140,7 @@ public class Browser {
         return ((TakesScreenshot) browser().driver()).getScreenshotAs(target);
     }
 
-    //DEPRECATED
-    @Deprecated
+    //DEPRECATED -> MOVE TO ANOTHER CLASS
     public String getClipboardContent() throws IOException, UnsupportedFlavorException {
         if (getSession().isSelenoid()) {
             try (Response response = new OkHttpClient().newCall(new Request.Builder().url(getSession().getRemoteWebDriverUrl() + "/clipboard/" + getSession().getSessionId()).build()).execute()) {
@@ -149,7 +153,7 @@ public class Browser {
         }
     }
 
-    @Deprecated
+    //DEPRECATED -> MOVE TO ANOTHER CLASS
     public String getSelenoidLink(String fileName) throws IOException {
         String downloadLink = getSession().getRemoteWebDriverUrl() + "/download/" + getSession().getSessionId() + "/" + fileName.replace(" ", "%20");
         try {

@@ -403,7 +403,7 @@ public class Elem {
             getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.numberOfElementsToBe(by, 0));
             return true;
         } catch (TimeoutException e) {
-            checkAssert(e);
+            checkAssert(new TimeoutException("Element MUST BE NOT PRESENT: "+toString(), e));
             return false;
         } finally {
             assertIt = false;
