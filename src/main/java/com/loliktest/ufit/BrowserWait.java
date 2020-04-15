@@ -3,8 +3,12 @@ package com.loliktest.ufit;
 import io.qameta.allure.Step;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -95,6 +99,27 @@ public class BrowserWait {
         assertMessage = message;
         return this;
     }
+
+    public boolean iframeWithElementInside(Elem iframe, Elem insideElem, long timeout){
+        return until((ExpectedCondition<Boolean>) driver -> {
+            try {
+                driver.switchTo().defaultContent();
+                driver.switchTo().frame(driver.findElement(iframe.getBy()));
+                driver.findElement(insideElem.getBy());
+                driver.switchTo().defaultContent();
+                return true;
+            } catch (NoSuchFrameException | StaleElementReferenceException | NoSuchElementException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }, timeout);
+    }
+
+    public boolean iframeWithElementInside(Elem iframe, Elem insideElem){
+        return iframeWithElementInside(iframe, insideElem, Timeout.getDefault());
+    }
+
+
 
     public BrowserWait assertion() {
         return assertion(null);
