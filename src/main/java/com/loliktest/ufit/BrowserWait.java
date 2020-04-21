@@ -115,6 +115,7 @@ public class BrowserWait {
     public boolean elementPresentInWindow(int window, Elem elem, long timeout) {
         return until((ExpectedCondition<Boolean>) driver -> {
             try {
+                if (window > driver.getWindowHandles().size() - 1) return false;
                 driver.switchTo().window(driver.getWindowHandles().toArray()[window].toString());
                 driver.findElement(elem.getBy());
                 return true;
