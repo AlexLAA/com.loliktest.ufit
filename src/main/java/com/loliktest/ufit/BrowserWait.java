@@ -1,13 +1,7 @@
 package com.loliktest.ufit;
 
 import io.qameta.allure.Step;
-import org.openqa.selenium.JavascriptException;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -65,17 +59,16 @@ public class BrowserWait {
         return until(ExpectedConditions.urlMatches(regex), timeout);
     }
 
-    public boolean isUrlMatches(String regex){
+    public boolean isUrlMatches(String regex) {
         return isUrlMatches(regex, Timeout.getDefault());
     }
-
 
 
     public boolean isNumberOfWindowsToBe(int count, long timeout) {
         return until(ExpectedConditions.numberOfWindowsToBe(count), timeout);
     }
 
-    public boolean isNumberOfWindowsToBe(int count){
+    public boolean isNumberOfWindowsToBe(int count) {
         return isNumberOfWindowsToBe(count, Timeout.getDefault());
     }
 
@@ -100,7 +93,7 @@ public class BrowserWait {
         return this;
     }
 
-    public boolean iframeWithElementInside(Elem iframe, Elem insideElem, long timeout){
+    public boolean iframeWithElementInside(Elem iframe, Elem insideElem, long timeout) {
         return until((ExpectedCondition<Boolean>) driver -> {
             try {
                 driver.switchTo().defaultContent();
@@ -115,11 +108,25 @@ public class BrowserWait {
         }, timeout);
     }
 
-    public boolean iframeWithElementInside(Elem iframe, Elem insideElem){
+    public boolean iframeWithElementInside(Elem iframe, Elem insideElem) {
         return iframeWithElementInside(iframe, insideElem, Timeout.getDefault());
     }
 
+    public boolean elementPresentInWindow(int window, Elem elem, long timeout) {
+        return until((ExpectedCondition<Boolean>) driver -> {
+            try {
+                driver.switchTo().window(driver.getWindowHandles().toArray()[window].toString());
+                driver.findElement(elem.getBy());
+                return true;
+            } catch (NoSuchWindowException | NoSuchElementException e) {
+                return false;
+            }
+        }, timeout);
+    }
 
+    public boolean elementPresentInWindow(int window, Elem elem) {
+        return elementPresentInWindow(window, elem, Timeout.getDefault());
+    }
 
     public BrowserWait assertion() {
         return assertion(null);
