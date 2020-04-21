@@ -121,6 +121,9 @@ public class BrowserWait {
                 return true;
             } catch (NoSuchWindowException | NoSuchElementException e) {
                 return false;
+            } catch (WebDriverException e) {
+                if (!e.getMessage().contains("cannot determine loading status")) throw e;
+                return false;
             }
         }, timeout);
     }
