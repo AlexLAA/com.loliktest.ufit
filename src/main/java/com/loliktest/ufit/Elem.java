@@ -585,6 +585,15 @@ public class Elem {
         return until(ExpectedConditions.numberOfElementsToBe(by, number), timeout);
     }
 
+    public boolean isInViewport(long timeout){
+        return until(CustomConditions.elementInViewport(by), timeout);
+    }
+
+    public boolean isInViewport(){
+        return until(CustomConditions.elementInViewport(by), Timeout.getDefaultElem());
+    }
+
+
     public <V> boolean is(Function<? super WebDriver, V> isTrue) {
         return is(isTrue, Timeout.getDefaultElem());
     }
@@ -699,6 +708,25 @@ public class Elem {
                 public String toString() {
                     return String.format("text ('%s') not to be present in element found by %s",
                             text, locator);
+                }
+            };
+        }
+
+        public static ExpectedCondition<Boolean> elementInViewport(final By locator) {
+
+            return new ExpectedCondition<Boolean>() {
+                @Override
+                public Boolean apply(WebDriver driver) {
+                    try {
+                        return (Boolean) ((JavascriptExecutor)driver).executeScript("return window.innerHeight > (arguments[0].getBoundingClientRect().y + arguments[0].getBoundingClientRect().height)", driver.findElement(locator));
+                    } catch (JavascriptException e) {
+                        return false;
+                    }
+                }
+
+                @Override
+                public String toString() {
+                    return String.format("Element not in viewport %s", locator);
                 }
             };
         }
