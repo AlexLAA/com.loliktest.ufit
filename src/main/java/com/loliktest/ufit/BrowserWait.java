@@ -72,8 +72,8 @@ public class BrowserWait {
         return isNumberOfWindowsToBe(count, Timeout.getDefault());
     }
 
-    public void javaScriptReturnStringContains(String script, String expected, int timeout) {
-        driverWait(timeout)
+    public boolean javaScriptReturnStringContains(String script, String expected, int timeout) {
+        return driverWait(timeout)
                 .ignoring(JavascriptException.class)
                 .ignoring(NullPointerException.class)
                 .until(d -> ((JavascriptExecutor) d).executeScript(script).toString().contains(expected));
