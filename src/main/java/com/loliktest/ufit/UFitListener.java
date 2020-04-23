@@ -2,6 +2,8 @@ package com.loliktest.ufit;
 
 import com.loliktest.ufit.listeners.BrowserListener;
 import com.loliktest.ufit.listeners.ElemListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.*;
 
 import java.util.HashMap;
@@ -11,6 +13,8 @@ import static com.loliktest.ufit.QuitPolicy.*;
 import static com.loliktest.ufit.UFitBrowser.browser;
 
 public class UFitListener implements ISuiteListener, ITestListener, IConfigurationListener2, IClassListener {
+
+    private static Logger logger = LoggerFactory.getLogger(UFitListener.class);
 
     static Map<String, String> testNgParameters = new HashMap<>();
 
@@ -58,7 +62,12 @@ public class UFitListener implements ISuiteListener, ITestListener, IConfigurati
 
     @Override
     public void onStart(ITestContext context) {
-
+        String testBrowser = context.getCurrentXmlTest().getParameter("browser");
+        if(testBrowser != null){
+            testNgParameters.put("browser", testBrowser);
+        } else {
+            testNgParameters.put("browser", context.getSuite().getParameter("browser"));
+        }
     }
 
     @Override

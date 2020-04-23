@@ -9,12 +9,12 @@ public class TestAllureAttachments {
 
     @BeforeSuite
     public void beforeSuite(){
-        throw new NullPointerException("BEFORE NOOOOOOOO!");
+        System.out.println("BEFORE SUITE");
     }
 
     @BeforeClass
     public void before(){
-        throw new NullPointerException("BEFORE NOOOOOOOO!");
+        System.out.println("BEFORE TEST");
     }
 
     @Test

@@ -1,6 +1,12 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="API Login DEBUG" parallel="tests" thread-count="1">
+    <parameter name="browser" value="Jack 222"></parameter>
     <test name="Auth">
+        <classes>
+            <class name="tests.TestAllureAttachments"></class>
+        </classes>
+    </test>
+    <test name="Auth 2">
         <classes>
             <class name="tests.TestAllureAttachments"></class>
         </classes>
