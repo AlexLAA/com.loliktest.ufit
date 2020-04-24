@@ -97,6 +97,14 @@ public class Elems<T> {
         return isAllMatch(p, timeout);
     }
 
+    public boolean isAnyMatch(Predicate<T> p, long timeout) {
+        return until(timeout, () -> get().stream().anyMatch(p));
+    }
+
+    public boolean isAnyMatch(Predicate<T> p) {
+        return isAnyMatch(p);
+    }
+
     public boolean isNumberOfItemsToBe(int size, long timeout) {
         return until(timeout, () -> get().size() == size);
     }
