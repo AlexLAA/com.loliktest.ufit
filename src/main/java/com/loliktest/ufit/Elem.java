@@ -277,6 +277,10 @@ public class Elem {
         }
     }
 
+    public void highlight() {
+        browser().devTools.executeScript("arguments[0].setAttribute('style', 'border: 2px solid red;');", find());
+    }
+
     public String getAttribute(String name) {
         return find().getAttribute(name);
     }
