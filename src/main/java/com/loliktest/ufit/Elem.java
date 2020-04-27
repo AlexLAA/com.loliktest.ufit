@@ -33,6 +33,7 @@ public class Elem {
     private String name;
     private By by;
     private int index;
+    private String assertMessage = "";
 
     private boolean assertIt = false;
     private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
@@ -102,6 +103,12 @@ public class Elem {
      */
     public Elem assertion() {
         assertIt = true;
+        return this;
+    }
+
+    public Elem assertion(String message) {
+        assertIt = true;
+        assertMessage = message;
         return this;
     }
 
@@ -270,6 +277,10 @@ public class Elem {
         }
     }
 
+    public void highlight() {
+        browser().devTools.executeScript("arguments[0].setAttribute('style', 'border: 2px solid red;');", find());
+    }
+
     public String getAttribute(String name) {
         return find().getAttribute(name);
     }
@@ -318,6 +329,9 @@ public class Elem {
     private void checkAssert(Object detailMessage) {
         if (assertIt) {
             assertIt = false;
+            if (!assertMessage.isEmpty()) {
+                detailMessage = assertMessage;
+            }
             throw new AssertionError(detailMessage);
         }
     }
@@ -325,6 +339,9 @@ public class Elem {
     private void checkAssert(String message, Throwable throwable) {
         if (assertIt) {
             assertIt = false;
+            if (!assertMessage.isEmpty()) {
+                message = assertMessage;
+            }
             throw new AssertionError(message, throwable);
         }
     }
@@ -403,7 +420,7 @@ public class Elem {
             getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.numberOfElementsToBe(by, 0));
             return true;
         } catch (TimeoutException e) {
-            checkAssert(new TimeoutException("Element MUST BE NOT PRESENT: "+toString(), e));
+            checkAssert(new TimeoutException("Element MUST BE NOT PRESENT: " + toString(), e));
             return false;
         } finally {
             assertIt = false;
@@ -585,11 +602,11 @@ public class Elem {
         return until(ExpectedConditions.numberOfElementsToBe(by, number), timeout);
     }
 
-    public boolean isInViewport(long timeout){
+    public boolean isInViewport(long timeout) {
         return until(CustomConditions.elementInViewport(by), timeout);
     }
 
-    public boolean isInViewport(){
+    public boolean isInViewport() {
         return until(CustomConditions.elementInViewport(by), Timeout.getDefaultElem());
     }
 
@@ -718,7 +735,7 @@ public class Elem {
                 @Override
                 public Boolean apply(WebDriver driver) {
                     try {
-                        return (Boolean) ((JavascriptExecutor)driver).executeScript("return window.innerHeight > (arguments[0].getBoundingClientRect().y + arguments[0].getBoundingClientRect().height)", driver.findElement(locator));
+                        return (Boolean) ((JavascriptExecutor) driver).executeScript("return window.innerHeight > (arguments[0].getBoundingClientRect().y + arguments[0].getBoundingClientRect().height)", driver.findElement(locator));
                     } catch (JavascriptException e) {
                         return false;
                     }
