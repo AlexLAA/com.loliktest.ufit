@@ -509,6 +509,7 @@ public class Elem {
 
     public boolean isAttributeContainsValue(String attribute, String value, long timeout) {
         try {
+            ignoredExceptions.add(StaleElementReferenceException.class);
             getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.attributeContains(by, attribute, value));
             return true;
         } catch (TimeoutException e) {
@@ -621,6 +622,7 @@ public class Elem {
 
     private <V> boolean until(Function<? super WebDriver, V> isTrue, long timeout) {
         try {
+            ignoredExceptions.add(StaleElementReferenceException.class);
             getWebDriverWait(timeout).ignoreAll(ignoredExceptions).pollingEvery(Duration.ofMillis(200)).until(isTrue);
             return true;
         } catch (TimeoutException e) {
