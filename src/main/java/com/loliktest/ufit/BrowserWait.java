@@ -68,6 +68,22 @@ public class BrowserWait {
         return until(ExpectedConditions.numberOfWindowsToBe(count), timeout);
     }
 
+    public boolean isTitleEquals(String expectedTitle, long timeout){
+        return until(ExpectedConditions.titleIs(expectedTitle), timeout);
+    }
+
+    public boolean isTitleEquals(String expectedTitle){
+        return isTitleEquals(expectedTitle, Timeout.getDefault());
+    }
+
+    public boolean isTitleContains(String expectedTitle, long timeout){
+        return until(ExpectedConditions.titleContains(expectedTitle), timeout);
+    }
+
+    public boolean isTitleContains(String expectedTitle){
+        return isTitleContains(expectedTitle, Timeout.getDefault());
+    }
+
     public boolean isNumberOfWindowsToBe(int count) {
         return isNumberOfWindowsToBe(count, Timeout.getDefault());
     }
