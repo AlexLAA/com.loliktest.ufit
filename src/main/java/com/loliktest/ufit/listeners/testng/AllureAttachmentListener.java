@@ -37,8 +37,7 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
     public void attachConsoleErrors(){
         try {
             Allure.addAttachment("Browser: Console Logs", browser().devTools.getConsoleErrors().stream().map(logEntry -> logEntry.toJson() + "\n").collect(Collectors.joining()));
-        } catch (WebDriverException e){
-            e.printStackTrace();
+        } catch (Exception e){
         }
     }
 
