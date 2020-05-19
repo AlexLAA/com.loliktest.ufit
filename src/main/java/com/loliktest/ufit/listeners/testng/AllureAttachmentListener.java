@@ -6,6 +6,7 @@ import io.qameta.allure.listener.TestLifecycleListener;
 import io.qameta.allure.model.FixtureResult;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.TestResult;
+import org.openqa.selenium.WebDriverException;
 
 import java.util.stream.Collectors;
 
@@ -18,9 +19,8 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
         if (status == Status.FAILED || status == Status.BROKEN) {
             Allure.parameter("Browser: Failed URL", browser().getCurrentUrl());
             browser().getScreenOnFail();
-            Allure.addAttachment("Browser: Console Logs",  browser().devTools.getConsoleErrors().stream().map(logEntry -> logEntry.toJson() + "\n").collect(Collectors.joining()));
+            attachConsoleErrors();
             Allure.addAttachment("Browser: Cookies", browser().driver().manage().getCookies().stream().map(cookie -> cookie.getName() + " : " + cookie.getValue() + "\n").collect(Collectors.joining()));
-            //Allure.addAttachment("Browser: HTML Page", "text/html", browser().driver().getPageSource(), ".html");
         }
     }
 
@@ -29,9 +29,16 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
         if (status == Status.FAILED || status == Status.BROKEN) {
             Allure.parameter("Browser: Failed URL", browser().getCurrentUrl());
             browser().getScreenOnFail();
-            Allure.addAttachment("Browser: Console Logs",  browser().devTools.getConsoleErrors().stream().map(logEntry -> logEntry.toJson() + "\n").collect(Collectors.joining()));
+            attachConsoleErrors();
             Allure.addAttachment("Browser: Cookies", browser().driver().manage().getCookies().stream().map(cookie -> cookie.getName() + " : " + cookie.getValue() + "\n").collect(Collectors.joining()));
-            //Allure.addAttachment("Browser: HTML Page", "text/html", browser().driver().getPageSource(), ".html");
+        }
+    }
+
+    public void attachConsoleErrors(){
+        try {
+            Allure.addAttachment("Browser: Console Logs", browser().devTools.getConsoleErrors().stream().map(logEntry -> logEntry.toJson() + "\n").collect(Collectors.joining()));
+        } catch (WebDriverException e){
+            e.printStackTrace();
         }
     }
 

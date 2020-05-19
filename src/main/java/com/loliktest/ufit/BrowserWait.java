@@ -159,7 +159,7 @@ public class BrowserWait {
             return true;
         } catch (TimeoutException e) {
             if (assertNextCondition) {
-                throw new AssertionError(Optional.ofNullable(assertMessage + " ").orElse("") + "Timeout: " + timeout + " seconds. Current URL: " + browser().getCurrentUrl(), e.getCause());
+                throw new AssertionError(Optional.ofNullable(assertMessage).orElse(e.getMessage()) + "Timeout: " + timeout + " seconds. Current URL: " + browser().getCurrentUrl(), e);
             }
             return false;
         } finally {
