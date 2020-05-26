@@ -2,7 +2,7 @@ package com.loliktest.ufit;
 
 public class Timeout {
 
-    private static long SHORT_WAIT = 10;
+    private static long SHORT_WAIT = 30;
     private static long DEFAULT_WAIT = 30;
 
 
