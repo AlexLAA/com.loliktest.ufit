@@ -16,7 +16,7 @@ public class Elems<T> {
     private Class<T> type;
     private boolean assertIt = false;
     private String assertMessage;
-    private long timeout = 10;
+    private long timeout = 30;
     private int initialIndex = 1;
     private int delta = 1;
     private boolean complex;
