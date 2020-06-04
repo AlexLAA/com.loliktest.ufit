@@ -18,6 +18,10 @@ public class UFitBrowser {
         return BROWSERS.get().isEmpty() ? browser(0) : CURRENT_BROWSER.get();
     }
 
+    public static boolean isBrowserStarted(){
+        return !BROWSERS.get().isEmpty();
+    }
+
     public static List<Browser> browsersList() {
         return BROWSERS.get();
     }
