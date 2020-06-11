@@ -28,7 +28,6 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
         }
     }
 
-    @Step("FAILED TEST ATTACHMENTS")
     public void makeAttachmentsForEachWindow(){
         browser().driver().getWindowHandles().forEach(w -> {
                 browser().driver().switchTo().window(w);
