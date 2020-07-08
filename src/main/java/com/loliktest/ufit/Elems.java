@@ -129,6 +129,14 @@ public class Elems<T> {
         return isNumberOfItemsToBeLessThen(size, timeout);
     }
 
+    public boolean isFirstItemMatch(Predicate<T> predicate) {
+        return isFirstItemMatch(predicate,timeout);
+    }
+
+    public boolean isFirstItemMatch(Predicate<T> predicate, long timeout) {
+        return until(timeout, () -> predicate.test(get().stream().findFirst().get()));
+    }
+
     private boolean until(long timeout, Callable<Boolean> conditionEvaluator) {
         try {
             await()
