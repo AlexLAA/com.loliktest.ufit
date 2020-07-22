@@ -43,7 +43,7 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
         } catch (Exception e){
 
         }
-        Allure.addAttachment("Browser ("+window+"): Failed URL", browser().getCurrentUrl());
+        Allure.parameter("Failed URL [Browser ("+window+")]", browser().getCurrentUrl());
         Allure.addAttachment("Browser ("+window+"): Cookies", browser().driver().manage().getCookies().stream().map(cookie -> cookie.getName() + " : " + cookie.getValue() + "\n").collect(Collectors.joining()));
     }
 
