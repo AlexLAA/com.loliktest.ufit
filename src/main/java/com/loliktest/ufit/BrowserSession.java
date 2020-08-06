@@ -50,6 +50,10 @@ public class BrowserSession {
         return parameters.containsKey(key) ? (Boolean) parameters.get(key) : false;
     }
 
+    public Object getParameter(String key){
+        return parameters.get(key);
+    }
+
     public String getParameterAsString(String key){
         return parameters.get(key).toString();
     }
