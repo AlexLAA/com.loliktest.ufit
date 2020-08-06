@@ -50,6 +50,10 @@ public class BrowserSession {
         return parameters.containsKey(key) ? (Boolean) parameters.get(key) : false;
     }
 
+    public String getParameterAsString(String key){
+        return parameters.get(key).toString();
+    }
+
     @Beta
     public String getRemoteWebDriverUrl(){
         return ((HttpCommandExecutor)((RemoteWebDriver) driver).getCommandExecutor()).getAddressOfRemoteServer().toString().replace("/wd/hub", "");
