@@ -25,15 +25,15 @@ import static com.loliktest.ufit.UFitBrowser.browser;
  */
 public class Elem {
 
-    private static List<IElemListener> listeners = new ArrayList<>();
+    protected static List<IElemListener> listeners = new ArrayList<>();
 
     static void setElemListener(IElemListener listener) {
         listeners.add(listener);
     }
 
     private String name;
-    private By by;
-    private int index;
+    protected By by;
+    protected int index;
     private String assertMessage = "";
 
     private boolean assertIt = false;
@@ -639,7 +639,7 @@ public class Elem {
         return browser().wait.driverWait();
     }
 
-    private WebDriverWait getWebDriverWait(long seconds) {
+   protected WebDriverWait getWebDriverWait(long seconds) {
         return browser().wait.driverWait(seconds);
     }
 
@@ -672,7 +672,7 @@ public class Elem {
         return "'" + name + "'" + " (" + by + ")";
     }
 
-    private static class CustomConditions {
+   protected static class CustomConditions {
         public static ExpectedCondition<String> getText(final By locator) {
 
             return new ExpectedCondition<String>() {
