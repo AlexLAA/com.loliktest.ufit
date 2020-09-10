@@ -1,5 +1,6 @@
 package com.loliktest.ufit;
 
+import com.loliktest.ufit.exceptions.UFitException;
 import com.loliktest.ufit.listeners.IElemListener;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
@@ -12,12 +13,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.loliktest.ufit.SelectorUtils.isCss;
+import static com.loliktest.ufit.SelectorUtils.isSelectorCompatibleTo;
 import static com.loliktest.ufit.UFitBrowser.browser;
 
 /**
@@ -80,17 +82,31 @@ public class Elem {
     }
 
     public void setParent(Elem elem) {
-        setBy(By.cssSelector(elem.getSelector() + " " + getSelector()));
-        this.name = elem.getName() + " -> " + name;
+        if (isSelectorCompatibleTo(elem.getSelector(), getSelector())) {
+            By by = isCss(getSelector())
+                    ? By.cssSelector(elem.getSelector() + " " + getSelector())
+                    : By.xpath(elem.getSelector() + getSelector());
+            setBy(by);
+            this.name = elem.getName() + " -> " + name;
+        } else {
+            throw new UFitException("Selectors: " + elem.getSelector() + " and " + getSelector() + " are not compatible!");
+        }
     }
 
     public Elem setIndex(int index) {
         // setBy();
         String selector = getSelector();
-        if (!selector.contains("(n)")) {
-            selector += ":nth-child(n)";
+
+        By by;
+        if (isCss(selector)) {
+            if (!selector.contains("(n)")) {
+                selector += ":nth-child(n)";
+            }
+            by = By.cssSelector(selector.replace("(n)", "(" + index + ")"));
+        } else {
+            by = By.xpath("(" + selector + ")[" + index + "]");
         }
-        return new Elem(By.cssSelector(selector.replace("(n)", "(" + index + ")")), name);
+        return new Elem(by, name);
     }
 
     public Actions actions() {

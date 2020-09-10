@@ -1,17 +1,16 @@
 package com.loliktest.ufit;
 
 import com.google.common.base.CaseFormat;
-import com.loliktest.ufit.exceptions.UFitException;
 import org.apache.commons.lang3.ArrayUtils;
-import org.openqa.selenium.By;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.loliktest.ufit.SelectorUtils.getBy;
 
 
 public class UFit {
@@ -46,7 +45,7 @@ public class UFit {
     private static void initElem(Object object, Field field, Elem parent, String selector) {
         if (field.getType().equals(Elem.class)) {
             try {
-                Elem elem = new Elem(By.cssSelector(selector), camelToText(field.getName()));
+                Elem elem = new Elem(getBy(selector), camelToText(field.getName()));
                 if (parent != null) elem.setParent(parent);
                 field.set(object, elem);
             } catch (IllegalAccessException e) {
@@ -58,7 +57,7 @@ public class UFit {
     static void initCustomElem(Object object, Field field, Elem parent, String selector) {
         if (field.isAnnotationPresent(Selector.class) && !field.getType().equals(Elem.class)) {
             try {
-                Elem elem = new Elem(By.cssSelector(selector), camelToText(field.getName()));
+                Elem elem = new Elem(getBy(selector), camelToText(field.getName()));
                 if (parent != null) {
                     elem.setParent(parent);
                 }
@@ -76,7 +75,7 @@ public class UFit {
 
     static void initElems(Object object, Field field, Elem parent, String selector) {
         if (field.isAnnotationPresent(Selector.class)) {
-            Elem elem = new Elem(By.cssSelector(selector), camelToText(field.getName()));
+            Elem elem = new Elem(getBy(selector), camelToText(field.getName()));
             if (parent != null) {
                 elem.setParent(parent);
             }
