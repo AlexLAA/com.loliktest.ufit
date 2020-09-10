@@ -1,5 +1,7 @@
 package com.loliktest.ufit;
 
+import org.openqa.selenium.By;
+
 /**
  * Created by dbudim on 10.09.2020
  */
@@ -7,12 +9,16 @@ package com.loliktest.ufit;
 public class SelectorUtils {
 
     public static boolean isCss(String selector) {
-        return !selector.startsWith("/");
+        return !selector.contains("/");
+    }
+
+    public static By getBy(String selector) {
+        return isCss(selector)
+                ? By.cssSelector(selector)
+                : By.xpath(selector);
     }
 
     public static boolean isSelectorCompatibleTo(String selector1, String selector2) {
-        if ((isCss(selector1) && isCss(selector2)) | (!isCss(selector1) && !isCss(selector2))) return true;
-        return false;
+        return (isCss(selector1) && isCss(selector2)) | (!isCss(selector1) && !isCss(selector2));
     }
-
 }

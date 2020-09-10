@@ -82,28 +82,31 @@ public class Elem {
     }
 
     public void setParent(Elem elem) {
-       /* if (!isSelectorCompatibleTo(elem.getSelector(), getSelector()))
-            throw new UFitException("selectors: " + elem.getSelector() + " and " + getSelector() + " are not compatible");
-*/
-        By by = isCss(elem.getSelector()) && isCss(getSelector())
-                ? By.cssSelector(elem.getSelector() + " " + getSelector())
-                : By.xpath(elem.getSelector() + getSelector());
-
-        setBy(by);
-        this.name = elem.getName() + " -> " + name;
+        if (isSelectorCompatibleTo(elem.getSelector(), getSelector())) {
+            By by = isCss(getSelector())
+                    ? By.cssSelector(elem.getSelector() + " " + getSelector())
+                    : By.xpath(elem.getSelector() + getSelector());
+            setBy(by);
+            this.name = elem.getName() + " -> " + name;
+        } else {
+            throw new UFitException("Selectors: " + elem.getSelector() + " and " + getSelector() + " are not compatible!");
+        }
     }
 
     public Elem setIndex(int index) {
         // setBy();
         String selector = getSelector();
 
+        By by;
         if (isCss(selector)) {
-            if (!selector.contains("(n)")) selector += ":nth-child(n)";
-            return new Elem(By.cssSelector(selector.replace("(n)", "(" + index + ")")), name);
+            if (!selector.contains("(n)")) {
+                selector += ":nth-child(n)";
+            }
+            by = By.cssSelector(selector.replace("(n)", "(" + index + ")"));
         } else {
-            selector = "(" + selector + ")[" + index + "]";
-            return new Elem(By.xpath(selector));
+            by = By.xpath("(" + selector + ")[" + index + "]");
         }
+        return new Elem(by, name);
     }
 
     public Actions actions() {
@@ -652,7 +655,7 @@ public class Elem {
         return browser().wait.driverWait();
     }
 
-    protected WebDriverWait getWebDriverWait(long seconds) {
+   protected WebDriverWait getWebDriverWait(long seconds) {
         return browser().wait.driverWait(seconds);
     }
 
@@ -676,7 +679,7 @@ public class Elem {
         switchToFrame(Timeout.getDefaultElem());
     }
 
-    public Select select() {
+    public Select select(){
         return new Select(find());
     }
 
@@ -685,7 +688,7 @@ public class Elem {
         return "'" + name + "'" + " (" + by + ")";
     }
 
-    protected static class CustomConditions {
+   protected static class CustomConditions {
         public static ExpectedCondition<String> getText(final By locator) {
 
             return new ExpectedCondition<String>() {
