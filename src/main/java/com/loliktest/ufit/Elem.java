@@ -1,5 +1,6 @@
 package com.loliktest.ufit;
 
+import com.loliktest.ufit.exceptions.UFitException;
 import com.loliktest.ufit.listeners.IElemListener;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
@@ -12,12 +13,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.loliktest.ufit.SelectorUtils.isCss;
+import static com.loliktest.ufit.SelectorUtils.isSelectorCompatibleTo;
 import static com.loliktest.ufit.UFitBrowser.browser;
 
 /**
@@ -80,17 +82,28 @@ public class Elem {
     }
 
     public void setParent(Elem elem) {
-        setBy(By.cssSelector(elem.getSelector() + " " + getSelector()));
+       /* if (!isSelectorCompatibleTo(elem.getSelector(), getSelector()))
+            throw new UFitException("selectors: " + elem.getSelector() + " and " + getSelector() + " are not compatible");
+*/
+        By by = isCss(elem.getSelector()) && isCss(getSelector())
+                ? By.cssSelector(elem.getSelector() + " " + getSelector())
+                : By.xpath(elem.getSelector() + getSelector());
+
+        setBy(by);
         this.name = elem.getName() + " -> " + name;
     }
 
     public Elem setIndex(int index) {
         // setBy();
         String selector = getSelector();
-        if (!selector.contains("(n)")) {
-            selector += ":nth-child(n)";
+
+        if (isCss(selector)) {
+            if (!selector.contains("(n)")) selector += ":nth-child(n)";
+            return new Elem(By.cssSelector(selector.replace("(n)", "(" + index + ")")), name);
+        } else {
+            selector = "(" + selector + ")[" + index + "]";
+            return new Elem(By.xpath(selector));
         }
-        return new Elem(By.cssSelector(selector.replace("(n)", "(" + index + ")")), name);
     }
 
     public Actions actions() {
@@ -639,7 +652,7 @@ public class Elem {
         return browser().wait.driverWait();
     }
 
-   protected WebDriverWait getWebDriverWait(long seconds) {
+    protected WebDriverWait getWebDriverWait(long seconds) {
         return browser().wait.driverWait(seconds);
     }
 
@@ -663,7 +676,7 @@ public class Elem {
         switchToFrame(Timeout.getDefaultElem());
     }
 
-    public Select select(){
+    public Select select() {
         return new Select(find());
     }
 
@@ -672,7 +685,7 @@ public class Elem {
         return "'" + name + "'" + " (" + by + ")";
     }
 
-   protected static class CustomConditions {
+    protected static class CustomConditions {
         public static ExpectedCondition<String> getText(final By locator) {
 
             return new ExpectedCondition<String>() {

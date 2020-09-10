@@ -1,17 +1,17 @@
 package com.loliktest.ufit;
 
 import com.google.common.base.CaseFormat;
-import com.loliktest.ufit.exceptions.UFitException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.By;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.loliktest.ufit.SelectorUtils.isCss;
 
 
 public class UFit {
@@ -46,7 +46,9 @@ public class UFit {
     private static void initElem(Object object, Field field, Elem parent, String selector) {
         if (field.getType().equals(Elem.class)) {
             try {
-                Elem elem = new Elem(By.cssSelector(selector), camelToText(field.getName()));
+                Elem elem = isCss(selector)
+                        ? new Elem(By.cssSelector(selector), camelToText(field.getName()))
+                        : new Elem(By.xpath(selector), camelToText(field.getName()));
                 if (parent != null) elem.setParent(parent);
                 field.set(object, elem);
             } catch (IllegalAccessException e) {
@@ -58,7 +60,8 @@ public class UFit {
     static void initCustomElem(Object object, Field field, Elem parent, String selector) {
         if (field.isAnnotationPresent(Selector.class) && !field.getType().equals(Elem.class)) {
             try {
-                Elem elem = new Elem(By.cssSelector(selector), camelToText(field.getName()));
+                By by = isCss(selector) ? By.cssSelector(selector) : By.xpath(selector);
+                Elem elem = new Elem(by, camelToText(field.getName()));
                 if (parent != null) {
                     elem.setParent(parent);
                 }
@@ -76,7 +79,8 @@ public class UFit {
 
     static void initElems(Object object, Field field, Elem parent, String selector) {
         if (field.isAnnotationPresent(Selector.class)) {
-            Elem elem = new Elem(By.cssSelector(selector), camelToText(field.getName()));
+            By by = isCss(selector) ? By.cssSelector(selector) : By.xpath(selector);
+            Elem elem = new Elem(by, camelToText(field.getName()));
             if (parent != null) {
                 elem.setParent(parent);
             }
@@ -122,10 +126,10 @@ public class UFit {
     static List initCollections(Elem elem, Class cl, int initialIndex, int delta, boolean complex) {
         AtomicInteger count = new AtomicInteger(initialIndex);
         List collection = new ArrayList<>();
-        if(complex){
+        if (complex) {
             return initComplexCollection(elem, cl, initialIndex, delta, complex);
         }
-        if(cl.getSimpleName().equals("Elem")){
+        if (cl.getSimpleName().equals("Elem")) {
             elem.finds().forEach(e -> collection.add(elem.setIndex(count.getAndAdd(delta))));
         } else {
             elem.finds().forEach(e -> {
@@ -143,28 +147,28 @@ public class UFit {
         return collection;
     }
 
-    static List initComplexCollection(Elem elem, Class cl, int initialIndex, int delta, boolean complex){
+    static List initComplexCollection(Elem elem, Class cl, int initialIndex, int delta, boolean complex) {
         AtomicInteger count = new AtomicInteger(initialIndex);
         List collection = new ArrayList<>();
         int size = elem.finds().size();
-        while (size != collection.size()){
+        while (size != collection.size()) {
             int index = count.get();
-            if(count.get() > 1000){
-               return collection;
+            if (count.get() > 1000) {
+                return collection;
             }
-            if(elem.setIndex(index).isPresent(0)) {
+            if (elem.setIndex(index).isPresent(0)) {
                 if (cl.getSimpleName().equals("Elem")) {
                     collection.add(elem.setIndex(index));
                 } else {
-                        try {
-                            Object o = cl.newInstance();
-                            initElements(o, elem.setIndex(index));
-                            collection.add(o);
-                        } catch (InstantiationException ex) {
-                            ex.printStackTrace();
-                        } catch (IllegalAccessException ex) {
-                            ex.printStackTrace();
-                        }
+                    try {
+                        Object o = cl.newInstance();
+                        initElements(o, elem.setIndex(index));
+                        collection.add(o);
+                    } catch (InstantiationException ex) {
+                        ex.printStackTrace();
+                    } catch (IllegalAccessException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
             count.incrementAndGet();
