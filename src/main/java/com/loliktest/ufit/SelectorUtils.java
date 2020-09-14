@@ -9,7 +9,7 @@ import org.openqa.selenium.By;
 class SelectorUtils {
 
     static boolean isCss(String selector) {
-        return !selector.contains("/");
+        return !selector.startsWith("/") && !selector.startsWith("(");
     }
 
     static By getBy(String selector) {
