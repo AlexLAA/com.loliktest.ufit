@@ -1,6 +1,9 @@
 package com.loliktest.ufit.listeners.testng;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loliktest.ufit.UFitBrowser;
+import com.loliktest.ufit.logs.ParsedRequest;
 import io.qameta.allure.Allure;
 import io.qameta.allure.listener.FixtureLifecycleListener;
 import io.qameta.allure.listener.TestLifecycleListener;
@@ -41,10 +44,12 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
         try {
             Allure.addAttachment("Browser (" + window + "): Console Logs", browser().devTools.getConsoleErrors().stream().map(logEntry -> logEntry.toJson() + "\n").collect(Collectors.joining()));
 
-            List<LogEntry> createdRequests = browser().devTools.getWebSocketRequests();
-            Map<String, String> hosts = browser().devTools.getWebSocketsHosts(createdRequests);
+            List<LogEntry> allRequests = browser().devTools.getRequests();
+
+            List<LogEntry> webSocketRequests = browser().devTools.getWebSocketRequests(allRequests);
+            Map<String, String> hosts = browser().devTools.getWebSocketsHosts(webSocketRequests);
             hosts.forEach((key, value) -> Allure.addAttachment("Browser (" + window + "): WebSocket :" + value, "ID - " + key + " URL - " + value + "\n"
-                    + browser().devTools.getWebSocketLogByConnectionId(createdRequests, key)
+                    + browser().devTools.getWebSocketLogByConnectionId(webSocketRequests, key)
                     .stream()
                     .map(logEntry -> {
                         JSONObject messageJSON = new JSONObject(logEntry.getMessage());
@@ -57,9 +62,9 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
                         }
                         return message;
                     }).collect(Collectors.joining())));
-
+            Allure.addAttachment("Browser (" + window + "): Network Logs", new Gson().toJson(browser().devTools.getParsedRequests(allRequests), new TypeToken<List<ParsedRequest>>() {}.getType()));
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         Allure.parameter("Failed URL [Browser (" + window + ")]", browser().getCurrentUrl());
         Allure.addAttachment("Browser (" + window + "): Cookies", browser().driver().manage().getCookies().stream().map(cookie -> cookie.getName() + " : " + cookie.getValue() + "\n").collect(Collectors.joining()));

@@ -1,5 +1,8 @@
 package com.loliktest.ufit;
 
+import com.google.gson.Gson;
+import com.loliktest.ufit.logs.LogMessage;
+import com.loliktest.ufit.logs.ParsedRequest;
 import org.json.JSONObject;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
@@ -31,9 +34,33 @@ public class DevTools {
         return browser().driver().manage().logs().get(LogType.PERFORMANCE).getAll();
     }
 
-    public List<LogEntry> getWebSocketRequests() {
-        List<LogEntry> entryList = browser().driver().manage().logs().get(LogType.PERFORMANCE).getAll();
+    private List<LogEntry> getSendRequests(List<LogEntry> entryList) {
+        return entryList.stream().filter(l -> l.getMessage().contains("Network.requestWillBeSent\"")).collect(Collectors.toList());
+    }
+
+    private List<LogEntry> getReceivedResponses(List<LogEntry> entryList) {
+        return entryList.stream().filter(l -> l.getMessage().contains("Network.responseReceived\"")).collect(Collectors.toList());
+    }
+
+    public List<LogEntry> getWebSocketRequests(List<LogEntry> entryList) {
         return entryList.stream().filter(logEntry -> logEntry.getMessage().contains("Network.webSocket")).sorted(Comparator.comparing(LogEntry::getTimestamp)).collect(Collectors.toList());
+    }
+
+    public List<ParsedRequest> getParsedRequests(List<LogEntry> entryList) {
+        List<LogMessage> parsedRequests = getSendRequests(entryList).stream().map(log -> new Gson().fromJson(log.toJson().get("message").toString(), LogMessage.class)).filter(data -> data.getRequestUrl().startsWith("http")).collect(Collectors.toList());
+        List<LogMessage> parsedResponses = getReceivedResponses(entryList).stream().map(log -> new Gson().fromJson(log.toJson().get("message").toString(), LogMessage.class)).filter(data -> data.getResponseUrl().startsWith("http")).collect(Collectors.toList());
+        List<ParsedRequest> resultList = new ArrayList<>();
+        for (LogMessage logMessage : parsedRequests) {
+            LogMessage responseData;
+            try {
+                responseData = parsedResponses.stream().filter(response -> response.getRequestId().equals(logMessage.getRequestId())).findFirst().get();
+                ParsedRequest parsedRequest = new ParsedRequest(responseData.getResponseUrl(), logMessage.getRequestMethod(), responseData.getStatusCode(), Long.valueOf(logMessage.getTimestamp()), logMessage.getHeaders());
+                resultList.add(parsedRequest);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return resultList.stream().sorted(Comparator.comparing(ParsedRequest::getTime)).collect(Collectors.toList());
     }
 
     public Map<String, String> getWebSocketsHosts(List<LogEntry> webSocketsLogs) {
@@ -67,6 +94,4 @@ public class DevTools {
         getConsoleErrors();
         getRequests();
     }
-
-
 }
