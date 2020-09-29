@@ -15,9 +15,11 @@ public class ParsedRequest {
     public String statusCode;
     public String time;
     @SerializedName("request-headers")
-    public Map<String, String> headers;
+    public Map<String, String> requestHeaders;
+    @SerializedName("response-headers")
+    public Map<String, String> responseHeaders;
 
-    public ParsedRequest(String url, String method, String statusCode, Long timestamp, Map<String, String> headers) {
+    public ParsedRequest(String url, String method, String statusCode, Long timestamp, Map<String, String> requestHeaders, Map<String, String> responseHeaders) {
         long time = timestamp * 1000;
 
         Calendar calendar = Calendar.getInstance();
@@ -29,7 +31,8 @@ public class ParsedRequest {
         this.method = method;
         this.statusCode = statusCode;
         this.time = sdf.format(calendar.getTime());
-        this.headers = headers;
+        this.requestHeaders = requestHeaders;
+        this.responseHeaders = responseHeaders;
     }
 
     public ParsedRequest() {
