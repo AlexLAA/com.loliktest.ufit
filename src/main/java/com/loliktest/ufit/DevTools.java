@@ -54,7 +54,7 @@ public class DevTools {
             LogMessage responseData;
             try {
                 responseData = parsedResponses.stream().filter(response -> response.getRequestId().equals(logMessage.getRequestId())).findFirst().get();
-                ParsedRequest parsedRequest = new ParsedRequest(responseData.getResponseUrl(), logMessage.getRequestMethod(), responseData.getStatusCode(), Long.valueOf(logMessage.getTimestamp()), logMessage.getHeaders());
+                ParsedRequest parsedRequest = new ParsedRequest(responseData.getResponseUrl(), logMessage.getRequestMethod(), responseData.getStatusCode(), Long.valueOf(logMessage.getTimestamp()), logMessage.getRequestHeaders(), responseData.getResponseHeaders());
                 resultList.add(parsedRequest);
             } catch (Exception e) {
                 e.printStackTrace();

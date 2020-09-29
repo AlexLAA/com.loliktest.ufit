@@ -30,8 +30,12 @@ public class LogMessage {
         return message.params.response.status;
     }
 
-    public Map<String, String> getHeaders() {
+    public Map<String, String> getRequestHeaders() {
         return message.params.request.headers;
+    }
+
+    public Map<String, String> getResponseHeaders() {
+        return message.params.response.headers;
     }
 
     public String getTimestamp() {
