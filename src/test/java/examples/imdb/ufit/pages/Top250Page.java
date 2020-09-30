@@ -1,9 +1,6 @@
 package examples.imdb.ufit.pages;
 
-import com.loliktest.ufit.Elem;
-import com.loliktest.ufit.Elems;
-import com.loliktest.ufit.Selector;
-import com.loliktest.ufit.UFit;
+import com.loliktest.ufit.*;
 import examples.imdb.ufit.elems.NavbarElem;
 import examples.imdb.ufit.elems.NavbarElemAlt;
 import examples.imdb.ufit.items.MovieItem;
@@ -15,6 +12,12 @@ public class Top250Page {
 
     @Selector("h1.header")
     public Elem title;
+
+    @Selector("//*[@name='sss']")
+    public MobileElem mobile;
+
+    @Selector("//*[@value='sss']")
+    public Elems<MobileElem> collection;
 
     @Selector("#nb_search")
     public NavbarElem navigationBar;
@@ -35,7 +38,7 @@ public class Top250Page {
         UFit.initPage(this);
     }
 
-    public void assertIsOpened(){
+    public void assertIsOpened() {
         browser().wait.assertion("PAGE NOT OPENED").isUrlContains("/top22", 5);
     }
 
