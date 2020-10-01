@@ -30,9 +30,9 @@ public class UFit {
                 if (!superFields.isEmpty() && thisFields.stream().anyMatch(f -> f.getName().equals(field.getName()))) {
                     selector = thisFields.stream().filter(f -> f.getName().equals(field.getName())).findFirst().get().getAnnotation(Selector.class).value();
                 }
-                if (field.getType().equals(Elem.class)) {
+                if (field.getType().equals(Elem.class) || field.getType().equals(MobileElem.class)) {
                     initElem(elements, field, parent, selector);
-                } else if (field.getType().equals(Elems.class)) {
+                } else if (field.getType().equals(Elems.class) || field.getType().equals(MobileElem.class)) {
                     initElems(elements, field, parent, selector);
                 } else {
                     initCustomElem(elements, field, parent, selector);
@@ -43,9 +43,11 @@ public class UFit {
 
 
     private static void initElem(Object object, Field field, Elem parent, String selector) {
-        if (field.getType().equals(Elem.class)) {
+        if (field.getType().equals(Elem.class) || field.getType().equals(MobileElem.class)) {
             try {
-                Elem elem = new Elem(getBy(selector), camelToText(field.getName()));
+                Elem elem = field.getType().equals(Elem.class)
+                        ? new Elem(getBy(selector), camelToText(field.getName()))
+                        : new MobileElem(getBy(selector), camelToText(field.getName()));
                 if (parent != null) elem.setParent(parent);
                 field.set(object, elem);
             } catch (IllegalAccessException e) {
@@ -55,9 +57,11 @@ public class UFit {
     }
 
     static void initCustomElem(Object object, Field field, Elem parent, String selector) {
-        if (field.isAnnotationPresent(Selector.class) && !field.getType().equals(Elem.class)) {
+        if (field.isAnnotationPresent(Selector.class) && !(field.getType().equals(Elem.class) || field.getType().equals(MobileElem.class))) {
             try {
-                Elem elem = new Elem(getBy(selector), camelToText(field.getName()));
+                Elem elem = field.getType().equals(Elem.class)
+                        ? new Elem(getBy(selector), camelToText(field.getName()))
+                        : new MobileElem(getBy(selector), camelToText(field.getName()));
                 if (parent != null) {
                     elem.setParent(parent);
                 }
@@ -121,10 +125,10 @@ public class UFit {
     static List initCollections(Elem elem, Class cl, int initialIndex, int delta, boolean complex) {
         AtomicInteger count = new AtomicInteger(initialIndex);
         List collection = new ArrayList<>();
-        if(complex){
+        if (complex) {
             return initComplexCollection(elem, cl, initialIndex, delta, complex);
         }
-        if(cl.getSimpleName().equals("Elem")){
+        if (cl.getSimpleName().equals("Elem") || cl.getSimpleName().equals("MobileElem")) {
             elem.finds().forEach(e -> collection.add(elem.setIndex(count.getAndAdd(delta))));
         } else {
             elem.finds().forEach(e -> {
@@ -142,17 +146,17 @@ public class UFit {
         return collection;
     }
 
-    static List initComplexCollection(Elem elem, Class cl, int initialIndex, int delta, boolean complex){
+    static List initComplexCollection(Elem elem, Class cl, int initialIndex, int delta, boolean complex) {
         AtomicInteger count = new AtomicInteger(initialIndex);
         List collection = new ArrayList<>();
         int size = elem.finds().size();
-        while (size != collection.size()){
+        while (size != collection.size()) {
             int index = count.get();
-            if(count.get() > 1000){
-               return collection;
+            if (count.get() > 1000) {
+                return collection;
             }
-            if(elem.setIndex(index).isPresent(0)) {
-                if (cl.getSimpleName().equals("Elem")) {
+            if (elem.setIndex(index).isPresent(0)) {
+                if (cl.getSimpleName().equals("Elem") || cl.getSimpleName().equals("MobileElem")) {
                     collection.add(elem.setIndex(index));
                 } else {
                         try {
