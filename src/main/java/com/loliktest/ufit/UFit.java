@@ -1,19 +1,48 @@
 package com.loliktest.ufit;
 
 import com.google.common.base.CaseFormat;
+import com.loliktest.ufit.exceptions.UFitException;
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.loliktest.ufit.SelectorUtils.getBy;
 
 
 public class UFit {
+
+    private static final Class<? extends Annotation> SELECTOR_TYPE;
+    private static Logger logger = LoggerFactory.getLogger(UFit.class);
+
+    static {
+
+        switch (getSelectorStrategy()) {
+            case "ios":
+                SELECTOR_TYPE = SelectorIOS.class;
+                break;
+
+            case "android":
+                SELECTOR_TYPE = SelectorAndroid.class;
+                break;
+
+            default:
+                SELECTOR_TYPE = Selector.class;
+                break;
+        }
+
+        logger.info("Selector type: " + SELECTOR_TYPE.getSimpleName());
+    }
 
     public static void initPage(Object thisObject) {
         initElements(thisObject, null);
@@ -25,14 +54,14 @@ public class UFit {
 
         Field[] fields = ArrayUtils.addAll(elements.getClass().getSuperclass().getDeclaredFields(), elements.getClass().getDeclaredFields());
         for (Field field : fields) {
-            if (field.isAnnotationPresent(Selector.class)) {
-                String selector = field.getAnnotation(Selector.class).value();
+            if (field.isAnnotationPresent(SELECTOR_TYPE)) {
+                String selector = getSelectorParam("value", field.getAnnotation(SELECTOR_TYPE)).toString();
                 if (!superFields.isEmpty() && thisFields.stream().anyMatch(f -> f.getName().equals(field.getName()))) {
-                    selector = thisFields.stream().filter(f -> f.getName().equals(field.getName())).findFirst().get().getAnnotation(Selector.class).value();
+                    selector = getSelectorParam("value", thisFields.stream().filter(f -> f.getName().equals(field.getName())).findFirst().get().getAnnotation(SELECTOR_TYPE)).toString();
                 }
                 if (field.getType().equals(Elem.class) || field.getType().equals(MobileElem.class)) {
                     initElem(elements, field, parent, selector);
-                } else if (field.getType().equals(Elems.class) || field.getType().equals(MobileElem.class)) {
+                } else if (field.getType().equals(Elems.class)) {
                     initElems(elements, field, parent, selector);
                 } else {
                     initCustomElem(elements, field, parent, selector);
@@ -40,7 +69,6 @@ public class UFit {
             }
         }
     }
-
 
     private static void initElem(Object object, Field field, Elem parent, String selector) {
         if (field.getType().equals(Elem.class) || field.getType().equals(MobileElem.class)) {
@@ -57,7 +85,7 @@ public class UFit {
     }
 
     static void initCustomElem(Object object, Field field, Elem parent, String selector) {
-        if (field.isAnnotationPresent(Selector.class) && !(field.getType().equals(Elem.class) || field.getType().equals(MobileElem.class))) {
+        if (field.isAnnotationPresent(SELECTOR_TYPE) && !(field.getType().equals(Elem.class) || field.getType().equals(MobileElem.class))) {
             try {
                 Elem elem = field.getType().equals(Elem.class)
                         ? new Elem(getBy(selector), camelToText(field.getName()))
@@ -78,8 +106,11 @@ public class UFit {
     }
 
     static void initElems(Object object, Field field, Elem parent, String selector) {
-        if (field.isAnnotationPresent(Selector.class)) {
-            Elem elem = new Elem(getBy(selector), camelToText(field.getName()));
+        if (field.isAnnotationPresent(SELECTOR_TYPE)) {
+            Elem elem = SELECTOR_TYPE.equals(Selector.class)
+                    ? new Elem(getBy(selector), camelToText(field.getName()))
+                    : new MobileElem(getBy(selector), camelToText(field.getName()));
+
             if (parent != null) {
                 elem.setParent(parent);
             }
@@ -99,16 +130,15 @@ public class UFit {
 
                 Field complex = ((Elems) inst).getClass().getDeclaredField("complex");
                 complex.setAccessible(true);
-                complex.set(inst, field.getAnnotation(Selector.class).searchIndex());
+                complex.set(inst, getSelectorParam("searchIndex", field.getAnnotation(SELECTOR_TYPE)));
 
                 Field initialIndex = ((Elems) inst).getClass().getDeclaredField("initialIndex");
                 initialIndex.setAccessible(true);
-                initialIndex.set(inst, field.getAnnotation(Selector.class).initialIndex());
+                initialIndex.set(inst, getSelectorParam("initialIndex", field.getAnnotation(SELECTOR_TYPE)));
 
                 Field delta = ((Elems) inst).getClass().getDeclaredField("delta");
                 delta.setAccessible(true);
-                delta.set(inst, field.getAnnotation(Selector.class).delta());
-
+                delta.set(inst, getSelectorParam("delta", field.getAnnotation(SELECTOR_TYPE)));
                 field.set(object, inst);
 
                 ((Elems) inst).elem = elem;
@@ -159,15 +189,15 @@ public class UFit {
                 if (cl.getSimpleName().equals("Elem") || cl.getSimpleName().equals("MobileElem")) {
                     collection.add(elem.setIndex(index));
                 } else {
-                        try {
-                            Object o = cl.newInstance();
-                            initElements(o, elem.setIndex(index));
-                            collection.add(o);
-                        } catch (InstantiationException ex) {
-                            ex.printStackTrace();
-                        } catch (IllegalAccessException ex) {
-                            ex.printStackTrace();
-                        }
+                    try {
+                        Object o = cl.newInstance();
+                        initElements(o, elem.setIndex(index));
+                        collection.add(o);
+                    } catch (InstantiationException ex) {
+                        ex.printStackTrace();
+                    } catch (IllegalAccessException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
             count.incrementAndGet();
@@ -179,6 +209,32 @@ public class UFit {
         String str = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, text).replaceAll("_", " ");
         String cap = str.substring(0, 1).toUpperCase() + str.substring(1);
         return cap;
+    }
+
+    private static Object getSelectorParam(String name, Annotation selector) {
+        try {
+            return selector.annotationType().getDeclaredMethod(name).invoke(selector);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new UFitException("Can't read selector parameter: " + name + e);
+        }
+    }
+
+    private static String getSelectorStrategy() {
+        String strategy = null;
+        if (System.getProperty("ufit.selector.strategy") != null) {
+            strategy = System.getProperty("ufit.selector.strategy");
+
+        } else if (ClassLoader.getSystemResource("TestParameters.properties") != null) {
+            Properties properties = new Properties();
+            try {
+                properties.load(ClassLoader.getSystemResource("TestParameters.properties").openStream());
+                strategy = properties.getProperty("ufit.selector.strategy");
+            } catch (IOException e) {
+                logger.error("Can't load properties file. " + e);
+            }
+        }
+
+        return strategy != null ? strategy : "";
     }
 
 }
