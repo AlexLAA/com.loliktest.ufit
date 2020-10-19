@@ -20,8 +20,14 @@ public class BrowserListener implements IBrowserListener {
     }
 
     @Override
-    public void open(Browser browser) {
+    public void beforeOpen(Browser browser) {
         logger.info("Open Browser");
     }
+
+    @Override
+    public void afterOpen(Browser browser) {
+
+    }
+
 
 }

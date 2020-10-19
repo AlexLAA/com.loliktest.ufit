@@ -8,6 +8,8 @@ public interface IBrowserListener {
 
     void quit(Browser browser);
 
-    void open(Browser browser);
+    void beforeOpen(Browser browser);
+
+    void afterOpen(Browser browser);
 
 }

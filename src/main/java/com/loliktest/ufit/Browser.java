@@ -38,13 +38,13 @@ public class Browser {
     private BrowserSession session = new BrowserSession();
 
     Browser(WebDriver driver) {
-        listeners.forEach(l -> l.open(this));
+        listeners.forEach(l -> l.beforeOpen(this));
         session.driver = driver;
+        listeners.forEach(l -> l.afterOpen(this));
     }
 
     Browser(IBrowserConfig config){
-        listeners.forEach(l -> l.open(this));
-        session.driver = config.setupDriver();
+        this(config.setupDriver());
         session.setParameters(config.parameters());
     }
 
