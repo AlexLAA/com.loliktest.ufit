@@ -60,7 +60,7 @@ public class DevTools {
                 e.printStackTrace();
             }
         }
-        return resultList.stream().filter(parsedRequest -> !parsedRequest.statusCode.startsWith("20")).sorted(Comparator.comparing(ParsedRequest::getTime)).collect(Collectors.toList());
+        return resultList.stream().filter(parsedRequest -> !parsedRequest.statusCode.startsWith("20") && !parsedRequest.statusCode.startsWith("30")).sorted(Comparator.comparing(ParsedRequest::getTime)).collect(Collectors.toList());
     }
 
     public Map<String, String> getWebSocketsHosts(List<LogEntry> webSocketsLogs) {
