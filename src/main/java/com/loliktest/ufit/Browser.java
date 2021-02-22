@@ -82,7 +82,6 @@ public class Browser {
         wait.pageLoadComplete();
     }
 
-    @Step
     public void quit() {
         listeners.forEach(l -> l.quit(this));
         try {
@@ -106,23 +105,19 @@ public class Browser {
     }
 
     //SWITCH TO
-    @Step
     public WebDriver switchToWindow(int number) {
         return driver().switchTo().window(driver().getWindowHandles().toArray()[number].toString());
     }
 
-    @Step
-    public void switchToFrame(Elem iFrameElem){
+    public void switchToFrame(Elem iFrameElem) {
         iFrameElem.switchToFrame();
     }
 
-    @Step
-    public void switchToParentFrame(){
+    public void switchToParentFrame() {
         driver().switchTo().parentFrame();
     }
 
-    @Step
-    public void switchToDefaultContent(){
+    public void switchToDefaultContent() {
         driver().switchTo().defaultContent();
     }
 

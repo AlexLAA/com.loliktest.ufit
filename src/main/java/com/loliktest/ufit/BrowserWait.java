@@ -1,6 +1,5 @@
 package com.loliktest.ufit;
 
-import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -25,7 +24,6 @@ public class BrowserWait {
         return driverWait(Timeout.getDefault());
     }
 
-    @Step
     public void pageLoadComplete() {
         try {
             driverWait().until(d ->
