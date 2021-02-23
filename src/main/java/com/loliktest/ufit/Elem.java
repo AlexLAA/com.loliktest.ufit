@@ -468,20 +468,18 @@ public class Elem {
 
 
     public boolean isContainsText(String text, long timeout) {
-        try {
-            if(assertIt) Allure.step("Assertion: " + getName() + " contains text - " + text, () -> {
+       return allureStep("Assertion: " + getName() + " contains text - " + text, () -> {
+            try {
                 getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
                 return true;
-            });
-            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
-            return true;
-        } catch (TimeoutException e) {
-            checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
-            return false;
-        } finally {
-            assertIt = false;
-            ignoredExceptions.clear();
-        }
+            } catch (TimeoutException e) {
+                checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
+                return false;
+            } finally {
+                assertIt = false;
+                ignoredExceptions.clear();
+            }
+        });
     }
 
     public boolean isEqualsText(String text) {
@@ -490,20 +488,18 @@ public class Elem {
 
 
     public boolean isEqualsText(String text, long timeout) {
-        try {
-            if(assertIt) Allure.step("Assertion: " + getName() + " text equals - " + text, () -> {
+      return allureStep("Assertion: " + getName() + " text equals - " + text, () -> {
+            try {
                 getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBe(by, text));
                 return true;
-            });
-            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBe(by, text));
-            return true;
-        } catch (TimeoutException e) {
-            checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
-            return false;
-        } finally {
-            assertIt = false;
-            ignoredExceptions.clear();
-        }
+            } catch (TimeoutException e) {
+                checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
+                return false;
+            } finally {
+                assertIt = false;
+                ignoredExceptions.clear();
+            }
+        });
     }
 
     public boolean isNotContainsText(String text) {
@@ -706,6 +702,19 @@ public class Elem {
     @Override
     public String toString() {
         return "'" + name + "'" + " (" + by + ")";
+    }
+
+    private boolean allureStep(String name, Allure.ThrowableRunnable<Boolean> runnable ) {
+        if(assertIt) {
+            return Allure.step(name, runnable);
+        } else {
+            try {
+                return runnable.run();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+                return false;
+            }
+        }
     }
 
    protected static class CustomConditions {
