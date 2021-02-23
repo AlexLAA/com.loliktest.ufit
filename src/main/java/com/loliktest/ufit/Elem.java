@@ -468,8 +468,11 @@ public class Elem {
 
 
     public boolean isContainsText(String text, long timeout) {
-        if(assertIt) Allure.step("Assertion: " + getName() + " contains text - " + text);
         try {
+            if(assertIt) Allure.step("Assertion: " + getName() + " contains text - " + text, () -> {
+                getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+                return true;
+            });
             getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
             return true;
         } catch (TimeoutException e) {
@@ -487,8 +490,11 @@ public class Elem {
 
 
     public boolean isEqualsText(String text, long timeout) {
-        if(assertIt) Allure.step("Assertion: " + getName() + " text equals - " + text);
         try {
+            if(assertIt) Allure.step("Assertion: " + getName() + " text equals - " + text, () -> {
+                getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBe(by, text));
+                return true;
+            });
             getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBe(by, text));
             return true;
         } catch (TimeoutException e) {
