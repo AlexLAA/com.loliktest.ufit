@@ -141,7 +141,7 @@ public class Elem {
 
     public void type(String text) {
         listeners.forEach(l -> l.type(text, this));
-        Allure.step("Type: " + text + " in " + getName(), () -> {
+        Allure.step("Type test data into " + getName(), () -> {
                     find().clear();
                     find().sendKeys(text);
                     getWebDriverWait().until(ExpectedConditions.textToBePresentInElementValue(by, text));
@@ -150,11 +150,14 @@ public class Elem {
     }
 
     public void typeClearDelete(String text) {
-        actions().sendKeys(Keys.chord(Keys.SHIFT, Keys.ARROW_UP))
-                .sendKeys(Keys.DELETE)
-                .sendKeys(text)
-                .sendKeys(Keys.ENTER)
-                .perform();
+        Allure.step("Type test data into " + getName(), () -> {
+            actions().sendKeys(Keys.chord(Keys.SHIFT, Keys.ARROW_UP))
+                    .sendKeys(Keys.DELETE)
+                    .sendKeys(text)
+                    .sendKeys(Keys.ENTER)
+                    .perform();
+            }
+        );
     }
 
     public void sendKeys(CharSequence... keysToSend) {
@@ -162,16 +165,20 @@ public class Elem {
     }
 
     public void typeClearBackspace(String text) {
-        clearBackspace();
-        find().sendKeys(text);
-        find().sendKeys(Keys.ENTER);
+        Allure.step("Type test data into " + getName(), () -> {
+            clearBackspace();
+            find().sendKeys(text);
+            find().sendKeys(Keys.ENTER);
+        });
     }
 
     public void typeByChar(String text) {
-        find().clear();
-        for (Character character : text.toCharArray()) {
-            find().sendKeys(character.toString());
-        }
+        Allure.step("Type test data into " + getName(), () -> {
+            find().clear();
+            for (Character character : text.toCharArray()) {
+                find().sendKeys(character.toString());
+            }
+        });
     }
 
     public void typeByCharAndCheck(String text) {
@@ -180,7 +187,9 @@ public class Elem {
     }
 
     public void typeByJs(String text) {
-        browser().devTools.executeScript("arguments[0].textContent = \"" + text + "\";", find());
+        Allure.step("Type test data into " + getName(), () -> {
+            browser().devTools.executeScript("arguments[0].textContent = \"" + text + "\";", find());
+        });
     }
 
     /**
@@ -190,17 +199,19 @@ public class Elem {
      * @param text
      */
     public void typeContentEditable(String text) {
-        click();
-        int times = 0;
-        while (!getText().isEmpty()) {
-            if (times > 1000) {
-                throw new WebDriverException("Can't clear value: " + toString());
+        Allure.step("Type test data into " + getName(), () -> {
+            click();
+            int times = 0;
+            while (!getText().isEmpty()) {
+                if (times > 1000) {
+                    throw new WebDriverException("Can't clear value: " + toString());
+                }
+                actions().sendKeys(Keys.DELETE).sendKeys(Keys.BACK_SPACE).perform();
+                times++;
             }
-            actions().sendKeys(Keys.DELETE).sendKeys(Keys.BACK_SPACE).perform();
-            times++;
-        }
-        find().sendKeys(text);
-        isContainsText(text);
+            find().sendKeys(text);
+            isContainsText(text);
+        });
     }
 
 
@@ -209,7 +220,9 @@ public class Elem {
     }
 
     public void clickByJs() {
-        browser().devTools.executeScript("arguments[0].click();", find());
+        Allure.step("Click: " + getName(), () -> {
+            browser().devTools.executeScript("arguments[0].click();", find());
+        });
     }
 
     public void click(long timeout) {
@@ -303,40 +316,39 @@ public class Elem {
     }
 
     public void dragAndDrop(Elem target) {
-        actions()
-                .clickAndHold(find())
-                .moveByOffset(0, 10)
-                .moveByOffset(0, 10)
-                .release(target.find())
-                .perform();
+        Allure.step("Drag and Drop: " + getName(), () -> {
+            actions()
+                    .clickAndHold(find())
+                    .moveByOffset(0, 10)
+                    .moveByOffset(0, 10)
+                    .release(target.find())
+                    .perform();
+        });
     }
 
-    @Step
     public void hoverOver() {
         hoverOver(Timeout.getDefaultElem());
     }
 
-    @Step
     public void hoverOver(long timeout) {
         actions().moveToElement(find(timeout)).perform();
     }
 
-    @Step
     public void hoverAndClick() {
         actions().moveToElement(find()).click().perform();
     }
 
-    @Step
     public void scrollTo() {
-        browser().devTools.executeScript("arguments[0].scrollIntoView(true);", find());
+        Allure.step("Scroll to: " + getName(), () -> {
+                    browser().devTools.executeScript("arguments[0].scrollIntoView(true);", find());
+                }
+        );
     }
 
-    @Step
     public void clickByCoordinates(int x, int y) {
         actions().moveToElement(find(), x, y).click().perform();
     }
 
-    @Step
     public String getInnerHtml() {
         return (String) browser().devTools.executeScript("return arguments[0].innerHTML", find());
     }
@@ -456,16 +468,18 @@ public class Elem {
 
 
     public boolean isContainsText(String text, long timeout) {
-        try {
-            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
-            return true;
-        } catch (TimeoutException e) {
-            checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
-            return false;
-        } finally {
-            assertIt = false;
-            ignoredExceptions.clear();
-        }
+       return allureStep("Assertion: " + getName() + " contains text - " + text, () -> {
+            try {
+                getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+                return true;
+            } catch (TimeoutException e) {
+                checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
+                return false;
+            } finally {
+                assertIt = false;
+                ignoredExceptions.clear();
+            }
+        });
     }
 
     public boolean isEqualsText(String text) {
@@ -474,16 +488,18 @@ public class Elem {
 
 
     public boolean isEqualsText(String text, long timeout) {
-        try {
-            getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBe(by, text));
-            return true;
-        } catch (TimeoutException e) {
-            checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
-            return false;
-        } finally {
-            assertIt = false;
-            ignoredExceptions.clear();
-        }
+      return allureStep("Assertion: " + getName() + " text equals - " + text, () -> {
+            try {
+                getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBe(by, text));
+                return true;
+            } catch (TimeoutException e) {
+                checkAssert("\nText: '" + text + "' not found in element " + toString() + " timeout: " + timeout, e);
+                return false;
+            } finally {
+                assertIt = false;
+                ignoredExceptions.clear();
+            }
+        });
     }
 
     public boolean isNotContainsText(String text) {
@@ -686,6 +702,19 @@ public class Elem {
     @Override
     public String toString() {
         return "'" + name + "'" + " (" + by + ")";
+    }
+
+    private boolean allureStep(String name, Allure.ThrowableRunnable<Boolean> runnable ) {
+        if(assertIt) {
+            return Allure.step(name, runnable);
+        } else {
+            try {
+                return runnable.run();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+                return false;
+            }
+        }
     }
 
    protected static class CustomConditions {
