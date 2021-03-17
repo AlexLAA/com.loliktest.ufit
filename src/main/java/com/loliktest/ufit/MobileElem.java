@@ -36,4 +36,8 @@ public class MobileElem extends Elem {
             return getWebDriverWait(timeout).withMessage(toString() + " not found!").until(ExpectedConditions.presenceOfElementLocated(by));
         }
     }
+
+    public MobileElem formatSelector(String... s) {
+        return new MobileElem(By.xpath(String.format(getSelector(), s)), getName());
+    }
 }
