@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import static com.loliktest.ufit.SelectorUtils.isCss;
+
 /**
  * Created by dbudim on 08.09.2020
  *
@@ -39,5 +41,21 @@ public class MobileElem extends Elem {
 
     public MobileElem formatSelector(String... s) {
         return new MobileElem(By.xpath(String.format(getSelector(), s)), getName());
+    }
+
+    @Override
+    public MobileElem setIndex(int index) {
+        String selector = getSelector();
+
+        By by;
+        if (isCss(selector)) {
+            if (!selector.contains("(n)")) {
+                selector += ":nth-child(n)";
+            }
+            by = By.cssSelector(selector.replace("(n)", "(" + index + ")"));
+        } else {
+            by = By.xpath("(" + selector + ")[" + index + "]");
+        }
+        return new MobileElem(by, name);
     }
 }

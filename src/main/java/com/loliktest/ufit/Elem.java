@@ -33,7 +33,7 @@ public class Elem {
         listeners.add(listener);
     }
 
-    private String name;
+    protected String name;
     protected By by;
     protected int index;
     private String assertMessage = "";
