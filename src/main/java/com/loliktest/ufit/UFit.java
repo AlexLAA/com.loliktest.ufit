@@ -158,8 +158,11 @@ public class UFit {
         if (complex) {
             return initComplexCollection(elem, cl, initialIndex, delta, complex);
         }
-        if (cl.getSimpleName().equals("Elem") || cl.getSimpleName().equals("MobileElem")) {
+        if (cl.getSimpleName().equals("Elem")) {
             elem.finds().forEach(e -> collection.add(elem.setIndex(count.getAndAdd(delta))));
+        } else if (cl.getSimpleName().equals("MobileElem")) {
+            MobileElem mobileElem = new MobileElem(elem.getBy());
+            mobileElem.finds().forEach(e -> collection.add(mobileElem.setIndex(count.getAndAdd(delta))));
         } else {
             elem.finds().forEach(e -> {
                 try {
@@ -186,8 +189,10 @@ public class UFit {
                 return collection;
             }
             if (elem.setIndex(index).isPresent(0)) {
-                if (cl.getSimpleName().equals("Elem") || cl.getSimpleName().equals("MobileElem")) {
+                if (cl.getSimpleName().equals("Elem")) {
                     collection.add(elem.setIndex(index));
+                } else if (cl.getSimpleName().equals("MobileElem")) {
+                    collection.add(new MobileElem(elem.getBy()).setIndex(index));
                 } else {
                     try {
                         Object o = cl.newInstance();
