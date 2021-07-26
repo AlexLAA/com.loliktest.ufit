@@ -40,6 +40,7 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
     }
 
     public void makeAttachments(String window) {
+        if (UFitBrowser.getBrowsersList().isEmpty()) return;
         Allure.addAttachment("Browser (" + window + "): Screen Failed", new ByteArrayInputStream(browser().makeScreenshot(OutputType.BYTES)));
         try {
             Allure.addAttachment("Browser (" + window + "): Console Logs", browser().devTools.getConsoleErrors().stream().map(logEntry -> logEntry.toJson() + "\n").collect(Collectors.joining()));
@@ -62,11 +63,12 @@ public class AllureAttachmentListener implements TestLifecycleListener, FixtureL
                         }
                         return message;
                     }).collect(Collectors.joining())));
-            Allure.addAttachment("Browser (" + window + "): Network Logs", new Gson().toJson(browser().devTools.getParsedRequests(allRequests), new TypeToken<List<ParsedRequest>>() {}.getType()));
+            Allure.addAttachment("Browser (" + window + "): Network Logs", new Gson().toJson(browser().devTools.getParsedRequests(allRequests), new TypeToken<List<ParsedRequest>>() {
+            }.getType()));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Allure.parameter("Failed URL [Browser (" + window + ")]", browser().getCurrentUrl());
+        Allure.addAttachment("Failed URL [Browser (" + window + ")]", browser().getCurrentUrl());
         Allure.addAttachment("Browser (" + window + "): Cookies", browser().driver().manage().getCookies().stream().map(cookie -> cookie.getName() + " : " + cookie.getValue() + "\n").collect(Collectors.joining()));
     }
 
