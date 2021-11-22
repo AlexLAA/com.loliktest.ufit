@@ -12,12 +12,12 @@
         <repository>
             <id>artifactory</id>
             <name>artifactory-releases</name>
-            <url>https://artifactory.infrateam.xyz/maven-qa</url>
+            <url>https://artifactory.infrateam.xyz/artifactory/maven-qa</url>
         </repository>
         <snapshotRepository>
             <id>artifactory</id>
             <name>artifactory-snapshots</name>
-            <url>https://artifactory.infrateam.xyz/maven-qa</url>
+            <url>https://artifactory.infrateam.xyz/artifactory/maven-qa</url>
         </snapshotRepository>
     </distributionManagement>
 
