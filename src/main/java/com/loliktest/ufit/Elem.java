@@ -2,6 +2,7 @@ package com.loliktest.ufit;
 
 import com.loliktest.ufit.exceptions.UFitException;
 import com.loliktest.ufit.listeners.IElemListener;
+import io.appium.java_client.MobileBy;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.openqa.selenium.*;
@@ -18,8 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.loliktest.ufit.SelectorUtils.isCss;
-import static com.loliktest.ufit.SelectorUtils.isSelectorCompatibleTo;
+import static com.loliktest.ufit.SelectorUtils.*;
 import static com.loliktest.ufit.UFitBrowser.browser;
 
 /**
@@ -82,14 +82,19 @@ public class Elem {
     }
 
     public void setParent(Elem elem) {
-        if (isSelectorCompatibleTo(elem.getSelector(), getSelector())) {
-            By by = isCss(getSelector())
-                    ? By.cssSelector(elem.getSelector() + " " + getSelector())
-                    : By.xpath(elem.getSelector() + getSelector());
+        String selector1 = elem.getSelector();
+        String selector2 = getSelector();
+
+        if (isSelectorCompatibleTo(selector1, selector2)) {
+            By by = isCss(selector2)
+                    ? By.cssSelector(selector1 + " " + selector2) :
+                    isIOSClassChain(selector1) ?
+                            MobileBy.iOSClassChain(selector1 + selector2)
+                            : By.xpath(selector1 + selector2);
             setBy(by);
             this.name = elem.getName() + " -> " + name;
         } else {
-            throw new UFitException("Selectors: " + elem.getSelector() + " and " + getSelector() + " are not compatible!");
+            throw new UFitException("Selectors: " + selector1 + " and " + selector2 + " are not compatible!");
         }
     }
 
@@ -103,6 +108,8 @@ public class Elem {
                 selector += ":nth-child(n)";
             }
             by = By.cssSelector(selector.replace("(n)", "(" + index + ")"));
+        } else if (isIOSClassChain(selector)) {
+            by = MobileBy.iOSClassChain(selector + "[" + index + "]");
         } else {
             by = By.xpath("(" + selector + ")[" + index + "]");
         }
@@ -151,12 +158,12 @@ public class Elem {
 
     public void typeClearDelete(String text) {
         Allure.step("Type test data into " + getName(), () -> {
-            actions().sendKeys(Keys.chord(Keys.SHIFT, Keys.ARROW_UP))
-                    .sendKeys(Keys.DELETE)
-                    .sendKeys(text)
-                    .sendKeys(Keys.ENTER)
-                    .perform();
-            }
+                    actions().sendKeys(Keys.chord(Keys.SHIFT, Keys.ARROW_UP))
+                            .sendKeys(Keys.DELETE)
+                            .sendKeys(text)
+                            .sendKeys(Keys.ENTER)
+                            .perform();
+                }
         );
     }
 
@@ -468,7 +475,7 @@ public class Elem {
 
 
     public boolean isContainsText(String text, long timeout) {
-       return allureStep("Assertion: " + getName() + " contains text - " + text, () -> {
+        return allureStep("Assertion: " + getName() + " contains text - " + text, () -> {
             try {
                 getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
                 return true;
@@ -488,7 +495,7 @@ public class Elem {
 
 
     public boolean isEqualsText(String text, long timeout) {
-      return allureStep("Assertion: " + getName() + " text equals - " + text, () -> {
+        return allureStep("Assertion: " + getName() + " text equals - " + text, () -> {
             try {
                 getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBe(by, text));
                 return true;
@@ -671,7 +678,7 @@ public class Elem {
         return browser().wait.driverWait();
     }
 
-   protected WebDriverWait getWebDriverWait(long seconds) {
+    protected WebDriverWait getWebDriverWait(long seconds) {
         return browser().wait.driverWait(seconds);
     }
 
@@ -695,7 +702,7 @@ public class Elem {
         switchToFrame(Timeout.getDefaultElem());
     }
 
-    public Select select(){
+    public Select select() {
         return new Select(find());
     }
 
@@ -704,8 +711,8 @@ public class Elem {
         return "'" + name + "'" + " (" + by + ")";
     }
 
-    private boolean allureStep(String name, Allure.ThrowableRunnable<Boolean> runnable ) {
-        if(assertIt) {
+    private boolean allureStep(String name, Allure.ThrowableRunnable<Boolean> runnable) {
+        if (assertIt) {
             return Allure.step(name, runnable);
         } else {
             try {
@@ -717,7 +724,7 @@ public class Elem {
         }
     }
 
-   protected static class CustomConditions {
+    protected static class CustomConditions {
         public static ExpectedCondition<String> getText(final By locator) {
 
             return new ExpectedCondition<String>() {

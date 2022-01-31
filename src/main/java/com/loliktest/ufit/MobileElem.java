@@ -1,16 +1,17 @@
 package com.loliktest.ufit;
 
+import io.appium.java_client.MobileBy;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.loliktest.ufit.SelectorUtils.isCss;
+import static com.loliktest.ufit.SelectorUtils.isIOSClassChain;
 
 /**
  * Created by dbudim on 08.09.2020
- *
+ * <p>
  * Elem for mobile automation with Appium etc.
- *
  */
 
 public class MobileElem extends Elem {
@@ -40,7 +41,11 @@ public class MobileElem extends Elem {
     }
 
     public MobileElem formatSelector(String... s) {
-        return new MobileElem(By.xpath(String.format(getSelector(), s)), getName());
+        if (isIOSClassChain(getSelector())) {
+            return new MobileElem(MobileBy.iOSClassChain(String.format(getSelector(), s)), getName());
+        } else {
+            return new MobileElem(By.xpath(String.format(getSelector(), s)), getName());
+        }
     }
 
     @Override
@@ -53,6 +58,8 @@ public class MobileElem extends Elem {
                 selector += ":nth-child(n)";
             }
             by = By.cssSelector(selector.replace("(n)", "(" + index + ")"));
+        } else if (isIOSClassChain(selector)) {
+            by = MobileBy.iOSClassChain(selector + "[" + index + "]");
         } else {
             by = By.xpath("(" + selector + ")[" + index + "]");
         }
