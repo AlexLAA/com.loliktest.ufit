@@ -4,7 +4,6 @@ import com.loliktest.ufit.exceptions.UFitException;
 import com.loliktest.ufit.listeners.IElemListener;
 import io.appium.java_client.MobileBy;
 import io.qameta.allure.Allure;
-import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -88,9 +87,9 @@ public class Elem {
         if (isSelectorCompatibleTo(selector1, selector2)) {
             By by = isCss(selector2)
                     ? By.cssSelector(selector1 + " " + selector2) :
-                    isIOSClassChain(selector1) ?
-                            MobileBy.iOSClassChain(selector1 + selector2)
-                            : By.xpath(selector1 + selector2);
+                    isXpath(selector1) ?
+                            By.xpath(selector1 + selector2)
+                            : MobileBy.iOSClassChain(selector1 + selector2);
             setBy(by);
             this.name = elem.getName() + " -> " + name;
         } else {
@@ -108,10 +107,10 @@ public class Elem {
                 selector += ":nth-child(n)";
             }
             by = By.cssSelector(selector.replace("(n)", "(" + index + ")"));
-        } else if (isIOSClassChain(selector)) {
-            by = MobileBy.iOSClassChain(selector + "[" + index + "]");
-        } else {
+        } else if (isXpath(selector)) {
             by = By.xpath("(" + selector + ")[" + index + "]");
+        } else {
+            by = MobileBy.iOSClassChain(selector + "[" + index + "]");
         }
         return new Elem(by, name);
     }

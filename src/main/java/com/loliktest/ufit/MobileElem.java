@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.loliktest.ufit.SelectorUtils.isCss;
-import static com.loliktest.ufit.SelectorUtils.isIOSClassChain;
+import static com.loliktest.ufit.SelectorUtils.isXpath;
 
 /**
  * Created by dbudim on 08.09.2020
@@ -41,10 +41,10 @@ public class MobileElem extends Elem {
     }
 
     public MobileElem formatSelector(String... s) {
-        if (isIOSClassChain(getSelector())) {
-            return new MobileElem(MobileBy.iOSClassChain(String.format(getSelector(), s)), getName());
-        } else {
+        if (isXpath(getSelector())) {
             return new MobileElem(By.xpath(String.format(getSelector(), s)), getName());
+        } else {
+            return new MobileElem(MobileBy.iOSClassChain(String.format(getSelector(), s)), getName());
         }
     }
 
@@ -58,10 +58,10 @@ public class MobileElem extends Elem {
                 selector += ":nth-child(n)";
             }
             by = By.cssSelector(selector.replace("(n)", "(" + index + ")"));
-        } else if (isIOSClassChain(selector)) {
-            by = MobileBy.iOSClassChain(selector + "[" + index + "]");
-        } else {
+        } else if (isXpath(selector)) {
             by = By.xpath("(" + selector + ")[" + index + "]");
+        } else {
+            by = MobileBy.iOSClassChain(selector + "[" + index + "]");
         }
         return new MobileElem(by, name);
     }
