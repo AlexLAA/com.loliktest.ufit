@@ -110,10 +110,10 @@ public class BrowserWait {
     public boolean iframeWithElementInside(Elem iframe, Elem insideElem, long timeout) {
         return until((ExpectedCondition<Boolean>) driver -> {
             try {
-                driver.switchTo().defaultContent();
+                driver.switchTo().parentFrame();
                 driver.switchTo().frame(driver.findElement(iframe.getBy()));
                 driver.findElement(insideElem.getBy());
-                driver.switchTo().defaultContent();
+                driver.switchTo().parentFrame();
                 return true;
             } catch (NoSuchFrameException | StaleElementReferenceException | NoSuchElementException e) {
                 e.printStackTrace();

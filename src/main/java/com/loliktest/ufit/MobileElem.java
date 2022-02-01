@@ -10,7 +10,6 @@ import static com.loliktest.ufit.SelectorUtils.isXpath;
 
 /**
  * Created by dbudim on 08.09.2020
- * <p>
  * Elem for mobile automation with Appium etc.
  */
 

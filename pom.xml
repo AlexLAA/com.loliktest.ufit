@@ -6,7 +6,7 @@
 
     <groupId>com.loliktest</groupId>
     <artifactId>ufit</artifactId>
-    <version>0.0.113-snapshoot-iosclasschain</version>
+    <version>0.0.115</version>
 
     <distributionManagement>
         <repository>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>3.141.59</version>
+            <version>4.1.1</version>
         </dependency>
 
         <dependency>
