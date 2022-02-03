@@ -10,7 +10,7 @@ import org.openqa.selenium.By;
 class SelectorUtils {
 
     static boolean isCss(String selector) {
-        return !selector.startsWith("/") && !selector.startsWith("(") && !selector.startsWith("**");
+        return !selector.startsWith("/") && !selector.startsWith("(");
     }
 
     static boolean isIOSClassChain(String selector) {
@@ -28,14 +28,21 @@ class SelectorUtils {
     static By getBy(String selector) {
         return isCss(selector)
                 ? By.cssSelector(selector)
-                : isXpath(selector) ?
+                : By.xpath(selector);
+    }
+
+    static By getMobileBy(String selector) {
+        return isXpath(selector) ?
                 By.xpath(selector)
                 : MobileBy.iOSClassChain(selector);
     }
 
     static boolean isSelectorCompatibleTo(String selector1, String selector2) {
-        return ((isCss(selector1) && isCss(selector2)) ||
-                (isXpath(selector1) && isXpath(selector2)) ||
+        return (isCss(selector1) && isCss(selector2)) | (!isCss(selector1) && !isCss(selector2));
+    }
+
+    static boolean isMobileSelectorCompatibleTo(String selector1, String selector2) {
+        return ((isXpath(selector1) && isXpath(selector2)) ||
                 (isIOSClassChain(selector1) && isIOSClassChain(selector2)) ||
                 (isIOSClassChain(selector1) && isSimpleXpath(selector2))
         );

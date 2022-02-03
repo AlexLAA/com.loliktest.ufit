@@ -2,8 +2,8 @@ package com.loliktest.ufit;
 
 import com.loliktest.ufit.exceptions.UFitException;
 import com.loliktest.ufit.listeners.IElemListener;
-import io.appium.java_client.MobileBy;
 import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -18,7 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.loliktest.ufit.SelectorUtils.*;
+import static com.loliktest.ufit.SelectorUtils.isCss;
+import static com.loliktest.ufit.SelectorUtils.isSelectorCompatibleTo;
 import static com.loliktest.ufit.UFitBrowser.browser;
 
 /**
@@ -81,19 +82,14 @@ public class Elem {
     }
 
     public void setParent(Elem elem) {
-        String selector1 = elem.getSelector();
-        String selector2 = getSelector();
-
-        if (isSelectorCompatibleTo(selector1, selector2)) {
-            By by = isCss(selector2)
-                    ? By.cssSelector(selector1 + " " + selector2) :
-                    isXpath(selector1) ?
-                            By.xpath(selector1 + selector2)
-                            : MobileBy.iOSClassChain(selector1 + selector2);
+        if (isSelectorCompatibleTo(elem.getSelector(), getSelector())) {
+            By by = isCss(getSelector())
+                    ? By.cssSelector(elem.getSelector() + " " + getSelector())
+                    : By.xpath(elem.getSelector() + getSelector());
             setBy(by);
             this.name = elem.getName() + " -> " + name;
         } else {
-            throw new UFitException("Selectors: " + selector1 + " and " + selector2 + " are not compatible!");
+            throw new UFitException("Selectors: " + elem.getSelector() + " and " + getSelector() + " are not compatible!");
         }
     }
 
@@ -107,10 +103,8 @@ public class Elem {
                 selector += ":nth-child(n)";
             }
             by = By.cssSelector(selector.replace("(n)", "(" + index + ")"));
-        } else if (isXpath(selector)) {
-            by = By.xpath("(" + selector + ")[" + index + "]");
         } else {
-            by = MobileBy.iOSClassChain(selector + "[" + index + "]");
+            by = By.xpath("(" + selector + ")[" + index + "]");
         }
         return new Elem(by, name);
     }
@@ -701,7 +695,7 @@ public class Elem {
         switchToFrame(Timeout.getDefaultElem());
     }
 
-    public Select select() {
+    public Select select(){
         return new Select(find());
     }
 
@@ -710,8 +704,8 @@ public class Elem {
         return "'" + name + "'" + " (" + by + ")";
     }
 
-    private boolean allureStep(String name, Allure.ThrowableRunnable<Boolean> runnable) {
-        if (assertIt) {
+    private boolean allureStep(String name, Allure.ThrowableRunnable<Boolean> runnable ) {
+        if(assertIt) {
             return Allure.step(name, runnable);
         } else {
             try {
