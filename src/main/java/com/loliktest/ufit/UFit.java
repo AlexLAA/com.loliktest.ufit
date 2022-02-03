@@ -11,13 +11,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.loliktest.ufit.SelectorUtils.getBy;
+import static com.loliktest.ufit.SelectorUtils.getMobileBy;
 
 
 public class UFit {
@@ -75,7 +73,7 @@ public class UFit {
             try {
                 Elem elem = field.getType().equals(Elem.class)
                         ? new Elem(getBy(selector), camelToText(field.getName()))
-                        : new MobileElem(getBy(selector), camelToText(field.getName()));
+                        : new MobileElem(getMobileBy(selector), camelToText(field.getName()));
                 if (parent != null) elem.setParent(parent);
                 field.set(object, elem);
             } catch (IllegalAccessException e) {
@@ -87,9 +85,9 @@ public class UFit {
     static void initCustomElem(Object object, Field field, Elem parent, String selector) {
         if (field.isAnnotationPresent(SELECTOR_TYPE) && !(field.getType().equals(Elem.class) || field.getType().equals(MobileElem.class))) {
             try {
-                Elem elem = field.getType().equals(Elem.class)
+                Elem elem = getCustomElemType(field).equals(Elem.class.getSimpleName())
                         ? new Elem(getBy(selector), camelToText(field.getName()))
-                        : new MobileElem(getBy(selector), camelToText(field.getName()));
+                        : new MobileElem(getMobileBy(selector), camelToText(field.getName()));
                 if (parent != null) {
                     elem.setParent(parent);
                 }
@@ -105,11 +103,18 @@ public class UFit {
         }
     }
 
+    static String getCustomElemType(Field field) {
+        Optional<Field> innerElement = Arrays.asList(field.getType().getDeclaredFields()).stream()
+                .filter(f -> f.getType().getSimpleName().equals(Elem.class.getSimpleName()) || f.getType().getSimpleName().equals(MobileElem.class.getSimpleName()))
+                .findAny();
+        return !innerElement.isEmpty() ? innerElement.get().getType().getSimpleName() : Elem.class.getSimpleName();
+    }
+
     static void initElems(Object object, Field field, Elem parent, String selector) {
         if (field.isAnnotationPresent(SELECTOR_TYPE)) {
             Elem elem = SELECTOR_TYPE.equals(Selector.class)
                     ? new Elem(getBy(selector), camelToText(field.getName()))
-                    : new MobileElem(getBy(selector), camelToText(field.getName()));
+                    : new MobileElem(getMobileBy(selector), camelToText(field.getName()));
 
             if (parent != null) {
                 elem.setParent(parent);

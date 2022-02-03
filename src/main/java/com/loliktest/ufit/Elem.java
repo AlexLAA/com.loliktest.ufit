@@ -151,12 +151,12 @@ public class Elem {
 
     public void typeClearDelete(String text) {
         Allure.step("Type test data into " + getName(), () -> {
-            actions().sendKeys(Keys.chord(Keys.SHIFT, Keys.ARROW_UP))
-                    .sendKeys(Keys.DELETE)
-                    .sendKeys(text)
-                    .sendKeys(Keys.ENTER)
-                    .perform();
-            }
+                    actions().sendKeys(Keys.chord(Keys.SHIFT, Keys.ARROW_UP))
+                            .sendKeys(Keys.DELETE)
+                            .sendKeys(text)
+                            .sendKeys(Keys.ENTER)
+                            .perform();
+                }
         );
     }
 
@@ -468,7 +468,7 @@ public class Elem {
 
 
     public boolean isContainsText(String text, long timeout) {
-       return allureStep("Assertion: " + getName() + " contains text - " + text, () -> {
+        return allureStep("Assertion: " + getName() + " contains text - " + text, () -> {
             try {
                 getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBePresentInElementLocated(by, text));
                 return true;
@@ -488,7 +488,7 @@ public class Elem {
 
 
     public boolean isEqualsText(String text, long timeout) {
-      return allureStep("Assertion: " + getName() + " text equals - " + text, () -> {
+        return allureStep("Assertion: " + getName() + " text equals - " + text, () -> {
             try {
                 getWebDriverWait(timeout).ignoreAll(ignoredExceptions).until(ExpectedConditions.textToBe(by, text));
                 return true;
@@ -671,7 +671,7 @@ public class Elem {
         return browser().wait.driverWait();
     }
 
-   protected WebDriverWait getWebDriverWait(long seconds) {
+    protected WebDriverWait getWebDriverWait(long seconds) {
         return browser().wait.driverWait(seconds);
     }
 
@@ -717,7 +717,7 @@ public class Elem {
         }
     }
 
-   protected static class CustomConditions {
+    protected static class CustomConditions {
         public static ExpectedCondition<String> getText(final By locator) {
 
             return new ExpectedCondition<String>() {
