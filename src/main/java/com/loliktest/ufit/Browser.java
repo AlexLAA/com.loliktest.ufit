@@ -1,5 +1,6 @@
 package com.loliktest.ufit;
 
+import com.loliktest.ufit.ChromeDevTools.ChromeDevTools;
 import com.loliktest.ufit.listeners.IBrowserListener;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
@@ -163,5 +164,8 @@ public class Browser {
         return downloadLink;
     }
 
+    public ChromeDevTools chromeDevTools() {
+        return new ChromeDevTools();
+    }
 
 }
