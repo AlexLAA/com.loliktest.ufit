@@ -1,11 +1,13 @@
 package com.loliktest.ufit;
 
 import com.google.gson.Gson;
+import com.loliktest.ufit.chromeDevTools.*;
 import com.loliktest.ufit.logs.LogMessage;
 import com.loliktest.ufit.logs.ParsedRequest;
 import org.json.JSONObject;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 
@@ -94,4 +96,34 @@ public class DevTools {
         getConsoleErrors();
         getRequests();
     }
+
+    /**
+     * Selenium 4 CDP methods
+     */
+    private org.openqa.selenium.devtools.DevTools initCDP() {
+        org.openqa.selenium.devtools.DevTools devToolsLocal = ((HasDevTools)browser().driver()).getDevTools();
+        devToolsLocal.createSessionIfThereIsNotOne();
+        return devToolsLocal;
+    }
+
+    public NetworkUfit network() {
+        return new NetworkUfit(initCDP());
+    }
+
+    public PerformanceUfit performance() {
+        return new PerformanceUfit(initCDP());
+    }
+
+    public LogsUfit logs() {
+        return new LogsUfit(initCDP());
+    }
+
+    public SimulateUfit simulate() {
+        return new SimulateUfit(initCDP());
+    }
+
+    public SecurityUfit security() {
+        return new SecurityUfit(initCDP());
+    }
+
 }

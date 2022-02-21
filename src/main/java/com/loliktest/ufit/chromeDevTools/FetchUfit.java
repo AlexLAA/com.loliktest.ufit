@@ -1,4 +1,4 @@
-package com.loliktest.ufit.ChromeDevTools;
+package com.loliktest.ufit.chromeDevTools;
 
 import org.openqa.selenium.devtools.v97.fetch.model.HeaderEntry;
 import org.openqa.selenium.devtools.v97.fetch.model.RequestPaused;

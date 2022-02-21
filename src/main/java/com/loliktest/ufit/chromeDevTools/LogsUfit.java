@@ -1,4 +1,4 @@
-package com.loliktest.ufit.ChromeDevTools;
+package com.loliktest.ufit.chromeDevTools;
 
 import org.openqa.selenium.devtools.v97.log.Log;
 import org.openqa.selenium.devtools.v97.log.model.LogEntry;
@@ -13,6 +13,12 @@ import java.util.function.Predicate;
 
 public class LogsUfit {
 
+    org.openqa.selenium.devtools.DevTools devTools;
+
+    public LogsUfit(org.openqa.selenium.devtools.DevTools devTools) {
+        this.devTools = devTools;
+    }
+
     private final Logger logger = LoggerFactory.getLogger(LogsUfit.class);
 
     /**
@@ -20,8 +26,8 @@ public class LogsUfit {
      * @param logHandler - Сonsumer with intercepted LogEntry
      */
     public void addConsoleLogsListener(Consumer<LogEntry> logHandler) {
-        ChromeDevTools.devToolsLocal.get().send(Log.enable());
-        ChromeDevTools.devToolsLocal.get().addListener(Log.entryAdded(), logHandler);
+        devTools.send(Log.enable());
+        devTools.addListener(Log.entryAdded(), logHandler);
     }
 
     /**
@@ -38,7 +44,7 @@ public class LogsUfit {
      * you must disable Log listener manually
      */
     public void disableConsoleLogsListener() {
-        ChromeDevTools.devToolsLocal.get().send(Log.disable());
+        devTools.send(Log.disable());
     }
 
     /**
@@ -47,8 +53,8 @@ public class LogsUfit {
      * @param responseMessageConsumer - Сonsumer with intercepted ResponseReceived
      */
     public void logResponse(Predicate<ResponseReceived> responseReceivedPredicate, Consumer<ResponseReceived> responseMessageConsumer) {
-        new NetworkUfit().enableNetwork();
-        ChromeDevTools.devToolsLocal.get().addListener(Network.responseReceived(),
+        new NetworkUfit(devTools).enableNetwork();
+        devTools.addListener(Network.responseReceived(),
                 responseReceived -> {
                     if (responseReceivedPredicate.test(responseReceived)) {
                         responseMessageConsumer.accept(responseReceived);
@@ -81,8 +87,8 @@ public class LogsUfit {
      * @param requestWillBeSentConsumer - Сonsumer with intercepted RequestWillBeSent
      */
     public void logRequest(Predicate<RequestWillBeSent> requestWillBeSentPredicate, Consumer<RequestWillBeSent> requestWillBeSentConsumer) {
-        new NetworkUfit().enableNetwork();
-        ChromeDevTools.devToolsLocal.get().addListener(Network.requestWillBeSent(),
+        new NetworkUfit(devTools).enableNetwork();
+        devTools.addListener(Network.requestWillBeSent(),
                 requestWillBeSent -> {
                     if (requestWillBeSentPredicate.test(requestWillBeSent)) {
                         requestWillBeSentConsumer.accept(requestWillBeSent);

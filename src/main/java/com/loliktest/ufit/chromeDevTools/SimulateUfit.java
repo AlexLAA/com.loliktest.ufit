@@ -1,4 +1,4 @@
-package com.loliktest.ufit.ChromeDevTools;
+package com.loliktest.ufit.chromeDevTools;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.v97.emulation.Emulation;
@@ -11,6 +11,12 @@ import java.util.Optional;
 import static com.loliktest.ufit.UFitBrowser.browser;
 
 public class SimulateUfit {
+
+    org.openqa.selenium.devtools.DevTools devTools;
+
+    public SimulateUfit(org.openqa.selenium.devtools.DevTools devTools) {
+        this.devTools = devTools;
+    }
 
     /**
      * call before browser starts
@@ -35,8 +41,8 @@ public class SimulateUfit {
      * @param connectionType - as example CELLULAR3G
      */
     public void simulateNetworkSpeed(boolean isOffline, int latency, int downloadThroughput, int uploadThroughput, ConnectionType connectionType) {
-        new NetworkUfit().enableNetwork();
-        ChromeDevTools.devToolsLocal.get().send(Network.emulateNetworkConditions(
+        new NetworkUfit(devTools).enableNetwork();
+        devTools.send(Network.emulateNetworkConditions(
                 isOffline,
                 latency,
                 downloadThroughput,
@@ -49,7 +55,7 @@ public class SimulateUfit {
      * @param timeZone - as example "America/New_York"
      */
     public void setTimezone(String timeZone) {
-        ChromeDevTools.devToolsLocal.get().send(Emulation.setTimezoneOverride(timeZone));
+        devTools.send(Emulation.setTimezoneOverride(timeZone));
     }
 
     /**
@@ -58,6 +64,6 @@ public class SimulateUfit {
      * @param accuracy - as example 1
      */
     public void setGeolocation(Number latitude, Number longitude, Number accuracy) {
-        ChromeDevTools.devToolsLocal.get().send(Emulation.setGeolocationOverride(Optional.ofNullable(latitude), Optional.ofNullable(longitude), Optional.ofNullable(accuracy)));
+        devTools.send(Emulation.setGeolocationOverride(Optional.ofNullable(latitude), Optional.ofNullable(longitude), Optional.ofNullable(accuracy)));
     }
 }

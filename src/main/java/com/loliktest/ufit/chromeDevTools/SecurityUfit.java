@@ -1,4 +1,4 @@
-package com.loliktest.ufit.ChromeDevTools;
+package com.loliktest.ufit.chromeDevTools;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.v97.security.Security;
@@ -10,6 +10,12 @@ import static com.loliktest.ufit.UFitBrowser.browser;
 
 public class SecurityUfit {
 
+    org.openqa.selenium.devtools.DevTools devTools;
+
+    public SecurityUfit(org.openqa.selenium.devtools.DevTools devTools) {
+        this.devTools = devTools;
+    }
+
     /**
      * @param permissionsList - as example "audioCapture"
      */
@@ -19,8 +25,8 @@ public class SecurityUfit {
     }
 
     public void ignoreSslCertificates() {
-        ChromeDevTools.devToolsLocal.get().send(Security.enable());
-        ChromeDevTools.devToolsLocal.get().send(Security.setIgnoreCertificateErrors(true));
+        devTools.send(Security.enable());
+        devTools.send(Security.setIgnoreCertificateErrors(true));
     }
 
 }

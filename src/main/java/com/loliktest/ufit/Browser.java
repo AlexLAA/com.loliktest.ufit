@@ -1,6 +1,5 @@
 package com.loliktest.ufit;
 
-import com.loliktest.ufit.ChromeDevTools.ChromeDevTools;
 import com.loliktest.ufit.listeners.IBrowserListener;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
@@ -162,10 +161,6 @@ public class Browser {
             Assert.fail("File [" + fileName + "] was not found in docker container");
         }
         return downloadLink;
-    }
-
-    public ChromeDevTools chromeDevTools() {
-        return new ChromeDevTools();
     }
 
 }

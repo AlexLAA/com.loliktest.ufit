@@ -1,4 +1,4 @@
-package com.loliktest.ufit.ChromeDevTools;
+package com.loliktest.ufit.chromeDevTools;
 
 import org.openqa.selenium.devtools.v97.fetch.Fetch;
 import org.openqa.selenium.devtools.v97.fetch.model.RequestPattern;
@@ -19,11 +19,17 @@ import java.util.logging.Level;
 
 public class NetworkUfit {
 
+    org.openqa.selenium.devtools.DevTools devTools;
+
+    public NetworkUfit(org.openqa.selenium.devtools.DevTools devTools) {
+        this.devTools = devTools;
+    }
+
     private final Logger logger = LoggerFactory.getLogger(NetworkUfit.class);
 
     void enableNetwork(Integer maxTotalBufferSize, Integer maxResourceBufferSize, Integer maxPostDataSize) {
         java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(Level.WARNING);
-        ChromeDevTools.devToolsLocal.get().send(Network.enable(Optional.ofNullable(maxTotalBufferSize), Optional.ofNullable(maxResourceBufferSize), Optional.ofNullable(maxPostDataSize)));
+        devTools.send(Network.enable(Optional.ofNullable(maxTotalBufferSize), Optional.ofNullable(maxResourceBufferSize), Optional.ofNullable(maxPostDataSize)));
     }
 
     /**
@@ -38,7 +44,7 @@ public class NetworkUfit {
      * network must be disabled manually
      */
     public void disableNetwork() {
-        ChromeDevTools.devToolsLocal.get().send(Network.disable());
+        devTools.send(Network.disable());
     }
 
     /**
@@ -46,14 +52,14 @@ public class NetworkUfit {
      * method calls in all other NetworkUfit methods, where needed
      */
     void enableModifyFetch(List<RequestPattern> requestPattern) {
-        ChromeDevTools.devToolsLocal.get().send(Fetch.enable(Optional.ofNullable(requestPattern), Optional.empty()));
+        devTools.send(Fetch.enable(Optional.ofNullable(requestPattern), Optional.empty()));
     }
 
     /**
      * fetch must be disabled manually
      */
     public void disableModifyFetch() {
-        ChromeDevTools.devToolsLocal.get().send(Fetch.disable());
+        devTools.send(Fetch.disable());
     }
 
     /**
@@ -63,7 +69,6 @@ public class NetworkUfit {
      *                             which you can change by FetchBuilder
      */
     public void modifyRequest(List<RequestPattern> requestPattern, Function<RequestPaused, FetchUfit> fetchBuilderFunction) {
-        final var devTools = ChromeDevTools.devToolsLocal.get();
         enableModifyFetch(requestPattern);
         devTools.addListener(Fetch.requestPaused(), requestPaused -> {
                 FetchUfit fetchUfit = fetchBuilderFunction.apply(requestPaused);
@@ -83,7 +88,7 @@ public class NetworkUfit {
     }
 
     public void updateUserAgent(String userAgent) {
-        ChromeDevTools.devToolsLocal.get().send(Network.setUserAgentOverride(userAgent, Optional.empty(), Optional.empty(), Optional.empty()));
+        devTools.send(Network.setUserAgentOverride(userAgent, Optional.empty(), Optional.empty(), Optional.empty()));
     }
 
     /**
@@ -92,12 +97,12 @@ public class NetworkUfit {
      */
     public void setHttpHeaders(Map<String, Object> headersMap) {
         enableNetwork();
-        ChromeDevTools.devToolsLocal.get().send(Network.setExtraHTTPHeaders(new Headers(headersMap))); //Map.of("aqa-header", "John Wick")
+        devTools.send(Network.setExtraHTTPHeaders(new Headers(headersMap))); //Map.of("aqa-header", "John Wick")
     }
 
     public List<Cookie> getAllCookies() {
         enableNetwork();
-        var cookiesList = ChromeDevTools.devToolsLocal.get().send(Network.getAllCookies());
+        var cookiesList = devTools.send(Network.getAllCookies());
         disableNetwork();
         return cookiesList;
     }
@@ -105,7 +110,7 @@ public class NetworkUfit {
 
     public void clearBrowserCache() {
         enableNetwork();
-        ChromeDevTools.devToolsLocal.get().send(Network.clearBrowserCache());
+        devTools.send(Network.clearBrowserCache());
         disableNetwork();
     }
 
@@ -114,7 +119,7 @@ public class NetworkUfit {
      */
     public void setBlockedURLs(List<String> blockedURLsList) {
         enableNetwork();
-        ChromeDevTools.devToolsLocal.get().send(Network.setBlockedURLs(blockedURLsList));
+        devTools.send(Network.setBlockedURLs(blockedURLsList));
         disableNetwork();
     }
 
