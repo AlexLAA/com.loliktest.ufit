@@ -19,9 +19,12 @@ public class SecurityUfit {
     /**
      * @param permissionsList - as example "audioCapture"
      */
+    public void grantPermissions(List<String> permissionsList, ChromeDriver driver) {
+        driver.executeCdpCommand("Browser.grantPermissions", Map.of("permissions", permissionsList));
+    }
+
     public void grantPermissions(List<String> permissionsList) {
-        ((ChromeDriver)browser().driver())
-                .executeCdpCommand("Browser.grantPermissions", Map.of("permissions", permissionsList));
+        grantPermissions(permissionsList, (ChromeDriver)browser().driver());
     }
 
     public void ignoreSslCertificates() {

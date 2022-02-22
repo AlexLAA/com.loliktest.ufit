@@ -82,6 +82,15 @@ public class LogsUfit {
     }
 
     /**
+     * Failed response interceptor with default logger Response output
+     * @param responseReceivedPredicate - Predicate to filter intercepted ResponseReceived
+     */
+    public void logFailedResponse(Predicate<ResponseReceived> responseReceivedPredicate) {
+        Predicate<ResponseReceived> predicate = responseReceived -> responseReceived.getResponse().getStatus() >= 400;
+        logResponse(predicate.and(responseReceivedPredicate));
+    }
+
+    /**
      * Request interceptor
      * @param requestWillBeSentPredicate - Predicate to filter intercepted RequestWillBeSent
      * @param requestWillBeSentConsumer - Сonsumer with intercepted RequestWillBeSent
