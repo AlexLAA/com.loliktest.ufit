@@ -10,6 +10,7 @@ import org.awaitility.core.ConditionTimeoutException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
@@ -133,6 +134,20 @@ public class Browser {
 
     public <T> T makeScreenshot(OutputType<T> target){
         return ((TakesScreenshot) browser().driver()).getScreenshotAs(target);
+    }
+
+    /**
+     * open new window and switch to it
+     */
+    public void openNewWindow() {
+        driver().switchTo().newWindow(WindowType.WINDOW);
+    }
+
+    /**
+     * open new tab and switch to it
+     */
+    public void openNewTab() {
+        driver().switchTo().newWindow(WindowType.TAB);
     }
 
     //DEPRECATED -> MOVE TO ANOTHER CLASS
