@@ -335,7 +335,15 @@ public class Elem {
     }
 
     public void hoverAndClick() {
-        actions().moveToElement(find()).click().perform();
+        actions().click(find()).perform();
+    }
+
+    public void contextClick() {
+        actions().contextClick(find()).perform();
+    }
+
+    public void doubleClick() {
+        actions().doubleClick(find()).perform();
     }
 
     public void scrollTo() {
@@ -345,6 +353,9 @@ public class Elem {
         );
     }
 
+    /**
+     * click on element with offset from the element's in-view center point
+     */
     public void clickByCoordinates(int x, int y) {
         actions().moveToElement(find(), x, y).click().perform();
     }
