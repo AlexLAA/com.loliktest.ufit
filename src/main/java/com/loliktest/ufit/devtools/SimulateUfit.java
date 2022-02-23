@@ -1,4 +1,4 @@
-package com.loliktest.ufit.chromeDevTools;
+package com.loliktest.ufit.devtools;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.v97.emulation.Emulation;
@@ -12,7 +12,7 @@ import static com.loliktest.ufit.UFitBrowser.browser;
 
 public class SimulateUfit {
 
-    org.openqa.selenium.devtools.DevTools devTools;
+    private org.openqa.selenium.devtools.DevTools devTools;
 
     public SimulateUfit(org.openqa.selenium.devtools.DevTools devTools) {
         this.devTools = devTools;

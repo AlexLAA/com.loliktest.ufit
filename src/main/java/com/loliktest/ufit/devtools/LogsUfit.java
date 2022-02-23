@@ -1,4 +1,4 @@
-package com.loliktest.ufit.chromeDevTools;
+package com.loliktest.ufit.devtools;
 
 import org.openqa.selenium.devtools.v97.log.Log;
 import org.openqa.selenium.devtools.v97.log.model.LogEntry;
@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 
 public class LogsUfit {
 
-    org.openqa.selenium.devtools.DevTools devTools;
+    private org.openqa.selenium.devtools.DevTools devTools;
 
     public LogsUfit(org.openqa.selenium.devtools.DevTools devTools) {
         this.devTools = devTools;

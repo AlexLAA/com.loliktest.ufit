@@ -1,4 +1,4 @@
-package com.loliktest.ufit.chromeDevTools;
+package com.loliktest.ufit.devtools;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.v97.security.Security;
@@ -10,7 +10,7 @@ import static com.loliktest.ufit.UFitBrowser.browser;
 
 public class SecurityUfit {
 
-    org.openqa.selenium.devtools.DevTools devTools;
+    private org.openqa.selenium.devtools.DevTools devTools;
 
     public SecurityUfit(org.openqa.selenium.devtools.DevTools devTools) {
         this.devTools = devTools;

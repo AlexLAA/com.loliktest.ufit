@@ -1,4 +1,4 @@
-package com.loliktest.ufit.chromeDevTools;
+package com.loliktest.ufit.devtools;
 
 import org.openqa.selenium.devtools.v97.performance.Performance;
 import org.openqa.selenium.devtools.v97.performance.model.Metric;
@@ -11,7 +11,7 @@ import static org.openqa.selenium.devtools.v97.performance.Performance.getMetric
 
 public class PerformanceUfit {
 
-    org.openqa.selenium.devtools.DevTools devTools;
+    private org.openqa.selenium.devtools.DevTools devTools;
 
     public PerformanceUfit(org.openqa.selenium.devtools.DevTools devTools) {
         this.devTools = devTools;

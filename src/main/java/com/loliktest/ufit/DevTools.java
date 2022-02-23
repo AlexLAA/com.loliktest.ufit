@@ -1,7 +1,7 @@
 package com.loliktest.ufit;
 
 import com.google.gson.Gson;
-import com.loliktest.ufit.chromeDevTools.*;
+import com.loliktest.ufit.devtools.*;
 import com.loliktest.ufit.logs.LogMessage;
 import com.loliktest.ufit.logs.ParsedRequest;
 import org.json.JSONObject;

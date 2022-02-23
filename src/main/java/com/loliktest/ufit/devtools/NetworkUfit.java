@@ -1,4 +1,4 @@
-package com.loliktest.ufit.chromeDevTools;
+package com.loliktest.ufit.devtools;
 
 import org.openqa.selenium.devtools.v97.fetch.Fetch;
 import org.openqa.selenium.devtools.v97.fetch.model.RequestPattern;
@@ -19,7 +19,7 @@ import java.util.logging.Level;
 
 public class NetworkUfit {
 
-    org.openqa.selenium.devtools.DevTools devTools;
+    private org.openqa.selenium.devtools.DevTools devTools;
 
     public NetworkUfit(org.openqa.selenium.devtools.DevTools devTools) {
         this.devTools = devTools;
