@@ -7,7 +7,6 @@ import com.loliktest.ufit.logs.ParsedRequest;
 import org.json.JSONObject;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
@@ -99,94 +98,48 @@ public class DevTools {
     }
 
     /**
-     * static method to init DevTools from ChromeDev Tools Protocol
-     * without Ufit
-     */
-    public static org.openqa.selenium.devtools.DevTools getCdpDevTools(WebDriver chromeDriver) {
-        org.openqa.selenium.devtools.DevTools devToolsLocal = ((HasDevTools)chromeDriver).getDevTools();
-        devToolsLocal.createSessionIfThereIsNotOne();
-        return devToolsLocal;
-    }
-    /**
      * private method to init DevTools Chrome DevTools Protocol
      * with Ufit
      */
-    private org.openqa.selenium.devtools.DevTools getCdpDevTools() {
-        return getCdpDevTools(browser().driver());
+    private org.openqa.selenium.devtools.DevTools getChromeDevTools() {
+        var chromeDevTools = ((HasDevTools)browser().driver()).getDevTools();
+        chromeDevTools.createSessionIfThereIsNotOne();
+        return chromeDevTools;
     }
 
     /**
      * get access to network Chrome DevTools Protocol methods
      */
     public NetworkUfit network() {
-        return new NetworkUfit(getCdpDevTools());
-    }
-
-    /**
-     * get access to network Chrome DevTools Protocol methods
-     * without Ufit
-     */
-    public static NetworkUfit network(org.openqa.selenium.devtools.DevTools devTools) {
-        return new NetworkUfit(devTools);
+        return new NetworkUfit(getChromeDevTools());
     }
 
     /**
      * get access to performance Chrome DevTools Protocol methods
      */
     public PerformanceUfit performance() {
-        return new PerformanceUfit(getCdpDevTools());
-    }
-
-    /**
-     * get access to performance Chrome DevTools Protocol methods
-     * without Ufit
-     */
-    public static PerformanceUfit performance(org.openqa.selenium.devtools.DevTools devTools) {
-        return new PerformanceUfit(devTools);
+        return new PerformanceUfit(getChromeDevTools());
     }
 
     /**
      * get access to logs Chrome DevTools Protocol methods
      */
     public LogsUfit logs() {
-        return new LogsUfit(getCdpDevTools());
-    }
-
-    /**
-     * get access to logs Chrome DevTools Protocol methods
-     * without Ufit
-     */
-    public static LogsUfit logs(org.openqa.selenium.devtools.DevTools devTools) {
-        return new LogsUfit(devTools);
+        return new LogsUfit(getChromeDevTools());
     }
 
     /**
      * get access to simulate Chrome DevTools Protocol methods
      */
     public SimulateUfit simulate() {
-        return new SimulateUfit(getCdpDevTools());
-    }
-
-    /**
-     * get access to simulate Chrome DevTools Protocol methods
-     * without Ufit
-     */
-    public static SimulateUfit simulate(org.openqa.selenium.devtools.DevTools devTools) {
-        return new SimulateUfit(devTools);
+        return new SimulateUfit(getChromeDevTools());
     }
 
     /**
      * get access to security Chrome DevTools Protocol methods
      */
     public SecurityUfit security() {
-        return new SecurityUfit(getCdpDevTools());
+        return new SecurityUfit(getChromeDevTools());
     }
 
-    /**
-     * get access to security Chrome DevTools Protocol methods
-     * without Ufit
-     */
-    public static SecurityUfit security(org.openqa.selenium.devtools.DevTools devTools) {
-        return new SecurityUfit(devTools);
-    }
 }

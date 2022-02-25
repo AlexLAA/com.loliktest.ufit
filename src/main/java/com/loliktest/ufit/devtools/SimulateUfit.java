@@ -24,17 +24,13 @@ public class SimulateUfit {
      * @param height - as example 1000
      * @param deviceScaleFactor - as example 50
      */
-    public void simulateMobileDevice(int width, int height, int deviceScaleFactor, ChromeDriver driver) {
+    public void simulateMobileDevice(int width, int height, int deviceScaleFactor) {
         Map<String, Object> deviceMetrics = Map.of(
                 "width", width,
                 "height", height,
                 "mobile", true,
                 "deviceScaleFactor", deviceScaleFactor);
-        driver.executeCdpCommand("Emulation.setDeviceMetricsOverride", deviceMetrics);
-    }
-
-    public void simulateMobileDevice(int width, int height, int deviceScaleFactor) {
-        simulateMobileDevice(width, height, deviceScaleFactor, (ChromeDriver)browser().driver());
+        ((ChromeDriver)browser().driver()).executeCdpCommand("Emulation.setDeviceMetricsOverride", deviceMetrics);
     }
 
     /**
