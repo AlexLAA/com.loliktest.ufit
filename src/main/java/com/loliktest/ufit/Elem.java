@@ -710,6 +710,15 @@ public class Elem {
         return new Select(find());
     }
 
+    public <T> T makeScreenshot(OutputType<T> target, long timeout) {
+        isVisible(timeout);
+        return ((TakesScreenshot)browser().driver().findElement(by)).getScreenshotAs(target);
+    }
+
+    public <T> T makeScreenshot(OutputType<T> target) {
+        return makeScreenshot(target, Timeout.getDefaultElem());
+    }
+
     @Override
     public String toString() {
         return "'" + name + "'" + " (" + by + ")";
