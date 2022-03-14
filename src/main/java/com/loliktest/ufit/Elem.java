@@ -644,6 +644,14 @@ public class Elem {
         return until(CustomConditions.elementInViewport(by), Timeout.getDefaultElem());
     }
 
+    public boolean isFocused() {
+        return until(CustomConditions.isFocused(by), Timeout.getDefaultElem());
+    }
+
+    public boolean isFocused(long timeout) {
+        return until(CustomConditions.isFocused(by), timeout);
+    }
+
 
     public <V> boolean is(Function<? super WebDriver, V> isTrue) {
         return is(isTrue, Timeout.getDefaultElem());
@@ -815,6 +823,25 @@ public class Elem {
                 @Override
                 public String toString() {
                     return "frame to be available: " + locator;
+                }
+            };
+        }
+
+        public static ExpectedCondition<Boolean> isFocused(final By locator) {
+            return new ExpectedCondition<Boolean>() {
+                @Override
+                public Boolean apply(WebDriver driver) {
+                    try {
+                        WebElement activeElement = (WebElement) ((JavascriptExecutor) driver).executeScript("return document.activeElement");
+                        return driver.findElement(locator).equals(activeElement);
+                    } catch (NoSuchFrameException | StaleElementReferenceException e) {
+                        return false;
+                    }
+                }
+
+                @Override
+                public String toString() {
+                    return "element not in focus: " + locator;
                 }
             };
         }
