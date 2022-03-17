@@ -12,6 +12,8 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.Actions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
 import java.awt.*;
@@ -33,6 +35,8 @@ import static org.awaitility.Awaitility.await;
 public class Browser {
 
     private static List<IBrowserListener> listeners = new ArrayList<>();
+    private static Logger logger = LoggerFactory.getLogger(Browser.class);
+
 
     public DevTools devTools = new DevTools();
     public BrowserWait wait = new BrowserWait();
@@ -88,7 +92,7 @@ public class Browser {
         try {
             getBrowsersList().forEach(b -> b.driver().quit());
         } catch (WebDriverException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             getBrowsersList().clear(); // TODO Make for each instance
         }
