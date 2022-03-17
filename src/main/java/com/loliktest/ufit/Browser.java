@@ -10,6 +10,7 @@ import org.awaitility.core.ConditionTimeoutException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
@@ -86,9 +87,10 @@ public class Browser {
         listeners.forEach(l -> l.quit(this));
         try {
             getBrowsersList().forEach(b -> b.driver().quit());
+        } catch (WebDriverException e) {
+            e.printStackTrace();
         } finally {
             getBrowsersList().clear(); // TODO Make for each instance
-
         }
     }
 
