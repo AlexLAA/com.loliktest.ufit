@@ -6,7 +6,7 @@
 
     <groupId>com.loliktest</groupId>
     <artifactId>ufit</artifactId>
-    <version>0.0.118</version>
+    <version>0.0.121</version>
 
     <distributionManagement>
         <repository>
@@ -106,7 +106,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
+            <version>1.7.36</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.json/json -->

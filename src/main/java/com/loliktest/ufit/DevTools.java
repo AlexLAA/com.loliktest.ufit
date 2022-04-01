@@ -50,12 +50,26 @@ public class DevTools {
         List<LogMessage> parsedRequests = getSendRequests(entryList).stream().map(log -> new Gson().fromJson(log.toJson().get("message").toString(), LogMessage.class)).filter(data -> data.getRequestUrl().startsWith("http")).collect(Collectors.toList());
         List<LogMessage> parsedResponses = getReceivedResponses(entryList).stream().map(log -> new Gson().fromJson(log.toJson().get("message").toString(), LogMessage.class)).filter(data -> data.getResponseUrl().startsWith("http")).collect(Collectors.toList());
         List<ParsedRequest> resultList = new ArrayList<>();
-        for (LogMessage logMessage : parsedRequests) {
-            LogMessage responseData;
+        for (LogMessage log : parsedRequests) {
             try {
-                responseData = parsedResponses.stream().filter(response -> response.getRequestId().equals(logMessage.getRequestId())).findFirst().get();
-                ParsedRequest parsedRequest = new ParsedRequest(responseData.getResponseUrl(), logMessage.getRequestMethod(), responseData.getStatusCode(), Long.valueOf(logMessage.getTimestamp()), logMessage.getRequestHeaders(), responseData.getResponseHeaders());
-                resultList.add(parsedRequest);
+                parsedResponses.stream()
+                        .filter(response -> response.getRequestId().equals(log.getRequestId()))
+                        .findFirst()
+                        .ifPresentOrElse(r -> {
+                                    ParsedRequest parsedRequest = new ParsedRequest(r.getResponseUrl(),
+                                            log.getRequestMethod(),
+                                            r.getStatusCode(),
+                                            Long.valueOf(log.getTimestamp()),
+                                            log.getRequestHeaders(),
+                                            r.getResponseHeaders());
+                                    resultList.add(parsedRequest);
+                                },
+                                () -> resultList.add(new ParsedRequest(log.getRequestUrl(),
+                                        log.getRequestMethod(),
+                                        "pending",
+                                        Long.valueOf(log.getTimestamp()),
+                                        log.getRequestHeaders(),
+                                        new HashMap<>())));
             } catch (Exception e) {
                 e.printStackTrace();
             }
