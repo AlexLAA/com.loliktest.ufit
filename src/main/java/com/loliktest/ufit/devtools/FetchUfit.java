@@ -19,6 +19,7 @@ public class FetchUfit {
     private List<HeaderEntry> headers;
     private Boolean interceptResponse;
     private final RequestPaused requestPaused;
+
     /**
      * Constructor uses for init FetchUfit object with default intercepted request parameters
      */
@@ -33,81 +34,60 @@ public class FetchUfit {
         this.interceptResponse = false;
     }
 
-    public final String getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    public final String getMethod() {
+    public String getMethod() {
         return method;
     }
 
-    public final String getPostData() {
+    public String getPostData() {
         return postData;
     }
 
-    public final List<HeaderEntry> getHeaders() {
+    public List<HeaderEntry> getHeaders() {
         return headers;
     }
 
-    public final Boolean getInterceptResponse() {
+    public Boolean getInterceptResponse() {
         return interceptResponse;
     }
-    /**
-     * init FetchBuilder for modify url, method, postData and headers
-     */
-    public FetchBuilder builder() {
-        return new FetchBuilder();
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public class FetchBuilder {
-        /**
-         * use set methods for modify request url, method, postData and headers
-         */
-        public FetchBuilder setUrl(String url) {
-            FetchUfit.this.url = url;
-            return this;
-        }
-
-        public FetchBuilder setUrl(Function<RequestPaused, String> urlFunction) {
-            return setUrl(urlFunction.apply(requestPaused));
-        }
-
-        public FetchBuilder setMethod(String method) {
-            FetchUfit.this.method = method;
-            return this;
-        }
-
-        public FetchBuilder setMethod(Function<RequestPaused, String> methodFunction) {
-            return setMethod(methodFunction.apply(requestPaused));
-        }
-
-        public FetchBuilder setPostData(String postData) {
-            FetchUfit.this.postData = postData;
-            return this;
-        }
-
-        public FetchBuilder setPostData(Function<RequestPaused, String> functionPostData) {
-            return setPostData(functionPostData.apply(requestPaused));
-        }
-
-        public FetchBuilder setHeaders(List<HeaderEntry> headers) {
-            FetchUfit.this.headers = headers;
-            return this;
-        }
-
-        public FetchBuilder setHeaders(Function<RequestPaused, List<HeaderEntry>> functionPostData) {
-            return setHeaders(functionPostData.apply(requestPaused));
-        }
-
-        public FetchBuilder setInterceptResponse(Boolean interceptResponse) {
-            FetchUfit.this.interceptResponse = interceptResponse;
-            return this;
-        }
-        /**
-         * return modified FetchUfit object
-         */
-        public FetchUfit build() {
-            return FetchUfit.this;
-        }
+    public void setUrl(Function<RequestPaused, String> urlFunction) {
+        setUrl(urlFunction.apply(requestPaused));
     }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public void setMethod(Function<RequestPaused, String> methodFunction) {
+        setMethod(methodFunction.apply(requestPaused));
+    }
+
+    public void setPostData(String postData) {
+        this.postData = postData;
+    }
+
+    public void setPostData(Function<RequestPaused, String> functionPostData) {
+        setPostData(functionPostData.apply(requestPaused));
+    }
+
+    public void setHeaders(List<HeaderEntry> headers) {
+        this.headers = headers;
+    }
+
+    public void setHeaders(Function<RequestPaused, List<HeaderEntry>> functionPostData) {
+        setHeaders(functionPostData.apply(requestPaused));
+    }
+
+    public void setInterceptResponse(Boolean interceptResponse) {
+        this.interceptResponse = interceptResponse;
+    }
+
 }
